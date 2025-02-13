@@ -1,4 +1,4 @@
-<header class="w-full h-[70px] bg-white shadow-md flex items-center px-4 md:px-16">
+<header class="fixed z-10 w-full h-[70px] bg-white shadow-md flex items-center px-4 md:px-16">
     <nav class="container mx-auto flex justify-between items-center">
         <h1 class="text-2xl font-bold text-orange-500">Pin<span class="text-slate-700">Book</span></h1>
         <ul class="hidden md:flex space-x-8 text-slate-700 font-poppins font-medium">
@@ -14,8 +14,8 @@
             <li><a href="{{ route('riwayat.index') }}"
                     class="{{ request()->routeIs('riwayat.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Riwayat</a>
             </li>
-            <li><a href="#"
-                    class="{{ request()->is('#') ? 'text-orange-500' : 'hover:text-orange-500' }}">Akun</a>
+            <li><a href="{{ route('akun.index') }}"
+                    class="{{ request()->is('akun.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Akun</a>
             </li>
         </ul>
 

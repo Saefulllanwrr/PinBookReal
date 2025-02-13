@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AkunController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
@@ -40,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
 
 // View katalog
 Route::get('/katalog-buku', [BookController::class, 'searchForUser'])->name('katalogBuku');
+Route::get('/books', [BookController::class, 'index'])->name('books.katalogBuku');
+Route::get('/books/detail/{id}', [BookController::class, 'getBookDetail'])->name('books.detail');
+
 
 // View detail peminjaman
 Route::get('/peminjaman/{id}', [BookController::class, 'showPeminjaman'])->name('peminjaman');
@@ -50,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pinjam', [PeminjamanController::class, 'store'])->name('pinjam.store');
     Route::post('/buku-dikembalikan/{id}', [PeminjamanController::class, 'kembali'])->name('buku.kembalikan');
     Route::get('/riwayat', [PeminjamanController::class, 'riwayat'])->name('riwayat.index');
+    Route::get('/akun', [AkunController::class, 'index'])->name('akun.index')->middleware('auth');
 });
 
 // Donation routes

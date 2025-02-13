@@ -18,8 +18,9 @@
     <x-navbar />
 
     <!-- Hero Section -->
-    <main class="w-full h-[462px] bg-[#0B192C] relative">
-        <div class="relative flex items-center h-full pb-20">
+    <main
+        class="w-full h-[500px] md:h-[600px] bg-gradient-to-r from-[#0B192C] to-[#1A2A3C] dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
+        <div class="container mx-auto h-full flex flex-col md:flex-row items-center justify-center px-6 md:px-12">
             <!-- Teks Sambutan -->
             <section class="w-[837px] ms-[59px] flex flex-col justify-center" data-aos="fade-right">
                 <h2 class="font-poppins font-bold text-[40px] text-white pt-[70px]">
