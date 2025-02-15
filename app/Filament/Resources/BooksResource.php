@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use App\Models\Book;
+use Filament\Forms;
 use Filament\Tables;
-use App\Models\Books;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -14,37 +13,74 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\BooksResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\BooksResource\RelationManagers;
-use App\Models\Kategori;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\ImageColumn;
+use App\Filament\Resources\BooksResource\Pages;
+use App\Models\Kategori;
 
 class BooksResource extends Resource
 {
     protected static ?string $model = Book::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $navigationLabel = 'Buku';
+
+    protected static ?string $navigationGroup = 'Manajemen Buku';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('judul')->label('Judul Buku'),
-                TextInput::make('penerbit')->label('Penerbit'),
-                TextInput::make('penulis')->label('Penulis'),
-                DatePicker::make('diterbitkan')->label('Tanggal Terbit'),
+                TextInput::make('judul')
+                    ->label('Judul Buku')
+                    ->required(),
+
+                TextInput::make('penerbit')
+                    ->label('Penerbit')
+                    ->required(),
+
+                TextInput::make('penulis')
+                    ->label('Penulis')
+                    ->required(),
+
+                Textarea::make('deskripsi')
+                    ->label('Deskripsi')
+                    ->required(),
+
+                DatePicker::make('diterbitkan')
+                    ->label('Tanggal Terbit')
+                    ->required(),
+
                 FileUpload::make('cover')
-                    ->disk('public') // Pastikan menggunakan disk 'public'
-                    ->directory('cover') // File disimpan di direktori 'cover'
-                    ->visibility('public'),
+                    ->disk('public')
+                    ->directory('cover')
+                    ->visibility('public')
+                    ->required(),
+
                 Select::make('kategori_id')
                     ->label('Kategori')
                     ->relationship('kategori', 'nama_kategori')
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->required(),
+
+                TextInput::make('stok')
+                    ->label('Stok Buku')
+                    ->numeric()
+                    ->minValue(0)
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $set('status', $state > 0 ? 'available' : 'borrowed');
+                    }),
+
+                Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'available' => 'Tersedia',
+                        'borrowed' => 'Dipinjam',
+                    ])
+                    ->disabled()
+                    ->default('available'),
             ]);
     }
 
@@ -52,14 +88,16 @@ class BooksResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('judul'),
-                TextColumn::make('penulis'),
-                TextColumn::make('penerbit'),
-                TextColumn::make('diterbitkan')->label('Tanggal Terbit'),
-                TextColumn::make('kategori.nama_kategori')->label('Kategori')->sortable(),
+                TextColumn::make('judul')->label('Judul Buku')->sortable()->searchable(),
+                TextColumn::make('penulis')->label('Penulis')->sortable()->searchable(),
+                TextColumn::make('penerbit')->label('Penerbit')->sortable()->searchable(),
+                TextColumn::make('diterbitkan')->label('Tanggal Terbit')->date(),
+                TextColumn::make('kategori.nama_kategori')->label('Kategori')->sortable()->searchable(),
+                TextColumn::make('stok')->label('Stok')->sortable(),
+                TextColumn::make('status')->label('Status')->sortable(),
                 ImageColumn::make('cover')
-                    ->disk('public') // Pastikan menggunakan disk yang sama dengan FileUpload
-                    ->width(100) // Atur lebar gambar
+                    ->disk('public')
+                    ->width(100)
                     ->height(100),
             ])
             ->filters([])

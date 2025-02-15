@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/katalog-buku', [BookController::class, 'searchForUser'])->name('katalogBuku');
 Route::get('/books', [BookController::class, 'index'])->name('books.katalogBuku');
 Route::get('/books/detail/{id}', [BookController::class, 'getBookDetail'])->name('books.detail');
+Route::get('/katalog', [BookController::class, 'index'])->name('books.katalogBuku');
 
 
 // View detail peminjaman

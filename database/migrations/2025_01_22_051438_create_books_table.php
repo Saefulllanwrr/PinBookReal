@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('penerbit');
             $table->string('penulis');
             $table->date('diterbitkan');
+            $table->text('deskripsi')->nullable();
             $table->string('cover');
             $table->string('status')->default('available');
 

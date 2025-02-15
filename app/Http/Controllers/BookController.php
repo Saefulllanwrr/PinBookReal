@@ -10,12 +10,29 @@ use Illuminate\Support\Facades\Auth;
 class BookController extends Controller
 {
     // Fungsi pencarian buku untuk pengguna
-    public function index()
+    public function index(Request $request)
     {
         $kategori = Kategori::all();
-        $books = Book::paginate(8);
+        $booksQuery = Book::query();
 
-        return view('katalogBuku', compact('kategori', 'books'));
+        // Filter berdasarkan kategori jika dipilih
+        if ($request->has('kategori') && $request->kategori != '') {
+            $booksQuery->where('kategori_id', $request->kategori);
+        }
+
+        // Pencarian berdasarkan query jika ada
+        if ($request->has('query')) {
+            $query = $request->input('query');
+            $booksQuery->where(function ($q) use ($query) {
+                $q->where('judul', 'like', '%' . $query . '%')
+                    ->orWhere('penulis', 'like', '%' . $query . '%')
+                    ->orWhere('penerbit', 'like', '%' . $query . '%');
+            });
+        }
+
+        $books = $booksQuery->paginate(8);
+
+        return view('books.katalogBuku', compact('kategori', 'books'));
     }
     public function searchForUser(Request $request)
     {
@@ -28,7 +45,7 @@ class BookController extends Controller
         $books = Book::where('judul', 'like', '%' . $query . '%')
             ->orWhere('penulis', 'like', '%' . $query . '%')
             ->orWhere('penerbit', 'like', '%' . $query . '%')
-            ->paginate();
+            ->paginate(12);
 
         // Arahkan ke halaman katalog dengan hasil pencarian
         return view('books.katalogBuku', compact('kategori', 'books'));
@@ -43,6 +60,7 @@ class BookController extends Controller
             'judul' => $book->judul,
             'penulis' => $book->penulis,
             'penerbit' => $book->penerbit,
+            'nama_kategori' => $book->kategori->nama_kategori ?? 'Tidak ada kategori',
             'deskripsi' => $book->deskripsi,
             'cover' => asset('storage/' . $book->cover)
         ]);

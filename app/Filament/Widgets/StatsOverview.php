@@ -10,11 +10,30 @@ class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
+        // Total Buku
         $countBook = Book::count();
+
+        // Buku yang sedang dipinjam
+        $borrowedBooks = Book::where('status', 'borrowed')->count();
+
+        // Buku yang masih tersedia
+        $availableBooks = Book::where('status', 'available')->count();
+
         return [
-            Stat::make('Total Buku', $countBook . ' Buku'),
-            Stat::make('Buku di Pinjam', '...'),
-            Stat::make('Average time on page', '3:12'),
+            Stat::make('Total Buku', "{$countBook} Buku")
+                ->description('Semua koleksi buku')
+                ->icon('heroicon-o-book-open')
+                ->color('primary'),
+
+            Stat::make('Buku Dipinjam', "{$borrowedBooks} Buku")
+                ->description('Sedang dipinjam')
+                ->icon('heroicon-o-clipboard-document-check') // Ganti dengan yang tersedia
+                ->color('warning'),
+
+            Stat::make('Buku Tersedia', "{$availableBooks} Buku")
+                ->description('Masih tersedia')
+                ->icon('heroicon-o-check-circle')
+                ->color('success'),
         ];
     }
 }

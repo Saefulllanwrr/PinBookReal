@@ -16,12 +16,12 @@
     <x-navbar class="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-lg z-50"></x-navbar>
 
     <!-- Spasi untuk Navbar -->
-    <div class="h-16"></div>
+    <div class="pt-40"></div>
 
     <!-- Form Pencarian & Filter -->
     <div
         class="container mx-auto px-4 pb-6 flex justify-center items-center flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-        <form action="{{ route('search') }}" method="GET" class="flex items-center w-full max-w-3xl space-x-4">
+        <form action="{{ route('katalogBuku') }}" method="GET" class="flex items-center w-full max-w-3xl space-x-4">
             <input type="text" name="query" placeholder="Cari buku..."
                 class="flex-1 h-14 px-6 rounded-2xl border border-slate-300 dark:border-gray-600 shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/50 focus:border-blue-500 transition duration-300 text-slate-700 dark:text-white dark:bg-gray-700 placeholder-slate-400 dark:placeholder-gray-400"
                 aria-label="Cari buku">
@@ -54,7 +54,8 @@
                     <div class="bg-white dark:bg-gray-700 shadow-2xl rounded-3xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-3xl duration-300"
                         onclick="openModal({{ $book->id }})">
                         <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
-                            class="w-full h-72 object-cover rounded-t-3xl" loading="lazy">
+                            class="w-full h-72 object-cover rounded-t-3xl">
+
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">{{ $book->judul }}
                             </h3>
@@ -105,6 +106,7 @@
                         <img src="${data.cover}" alt="Cover ${data.judul}" class="w-full h-72 object-cover rounded-xl mb-4">
                         <p><strong>Penulis:</strong> ${data.penulis}</p>
                         <p><strong>Penerbit:</strong> ${data.penerbit}</p>
+                        <p><strong>Kategori:</strong> ${data.nama_kategori}</p>
                         <p><strong>Deskripsi:</strong> ${data.deskripsi}</p>
                     `;
                     // Tampilkan modal

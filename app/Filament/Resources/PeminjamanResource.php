@@ -24,6 +24,8 @@ class PeminjamanResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document';
     protected static ?string $navigationLabel = 'Laporan Peminjaman';
 
+    protected static ?string $navigationGroup = 'Manajemen Laporan';
+
     public static function canCreate(): bool
     {
         return false;

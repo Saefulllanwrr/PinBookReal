@@ -23,6 +23,8 @@ class KategoriResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
     protected static ?string $navigationLabel = 'Kategori';
 
+    protected static ?string $navigationGroup = 'Manajemen Buku';
+
     public static function form(Form $form): Form
     {
         return $form

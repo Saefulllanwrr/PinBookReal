@@ -23,6 +23,7 @@ class DonationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationLabel = 'Laporan Donasi';
+    protected static ?string $navigationGroup = 'Manajemen Laporan';
 
     public static function canCreate(): bool
     {

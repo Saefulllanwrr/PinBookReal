@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Book extends Model
 {
-    
+
     public function kategori()
     {
-        return $this->belongsTo(Kategori::class);
+        return $this->belongsTo(Kategori::class, 'kategori_id');
     }
     public function peminjaman()
     {
@@ -24,5 +24,5 @@ class Book extends Model
     protected $table = 'books';
 
     // Menentukan field yang bisa diisi massal
-    protected $fillable = ['judul', 'penerbit', 'penulis', 'diterbitkan', 'cover'];
+    protected $fillable = ['judul', 'penerbit', 'penulis', 'deskripsi', 'diterbitkan', 'cover', 'stok', 'status'];
 }
