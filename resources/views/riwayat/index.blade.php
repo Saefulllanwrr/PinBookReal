@@ -16,6 +16,13 @@
     <!-- Spasi untuk Navbar -->
     <div class="h-20"></div>
 
+    <!-- Alert Section -->
+    @guest
+        <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk meminjam buku!')" class="block mt-6">
+            
+        </a>
+    @endguest
+
     <div class="container mx-auto px-4">
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h2 class="text-3xl font-bold mb-6 text-gray-800">📖 Riwayat Peminjaman</h2>

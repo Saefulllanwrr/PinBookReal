@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
-
     @vite('resources/css/app.css')
 </head>
 
@@ -20,9 +19,9 @@
     <!-- Spasi untuk Navbar -->
     <div class="h-20"></div>
 
-    <div class="container mx-auto mt-4 px-4">
-        <div class="bg-white shadow-lg rounded-xl p-6">
-            <h2 class="text-3xl font-bold mb-6 text-gray-800">📚 Buku yang Sedang Dipinjam</h2>
+    <div class="container mx-auto mt-8 px-4">
+        <div class="bg-white shadow-lg rounded-xl p-8">
+            <h2 class="text-3xl font-bold mb-8 text-gray-800">📚 Buku yang Sedang Dipinjam</h2>
 
             <!-- Notifikasi Pesan -->
             @if (session('status'))
@@ -37,24 +36,24 @@
                 <table class="min-w-full bg-white rounded-lg shadow-sm">
                     <thead>
                         <tr class="bg-gray-100 text-gray-600 text-left text-sm font-semibold">
-                            <th class="py-3 px-6">Judul Buku</th>
-                            <th class="py-3 px-6">Tanggal Pinjam</th>
-                            <th class="py-3 px-6 text-center">Aksi</th>
+                            <th class="py-4 px-6">Judul Buku</th>
+                            <th class="py-4 px-6">Tanggal Pinjam</th>
+                            <th class="py-4 px-6 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($peminjaman as $pinjam)
                             <tr class="border-b border-gray-200 hover:bg-gray-50 transition duration-200">
-                                <td class="py-4 px-6">{{ $pinjam->book->judul }}</td>
-                                <td class="py-4 px-6">{{ $pinjam->tanggal_pinjam }}</td>
-                                <td class="py-4 px-6 text-center">
+                                <td class="py-5 px-6">{{ $pinjam->book->judul }}</td>
+                                <td class="py-5 px-6">{{ $pinjam->tanggal_pinjam }}</td>
+                                <td class="py-5 px-6 text-center space-x-4">
                                     <!-- Tombol Pengembalian Buku -->
                                     <button type="button" onclick="confirmReturn({{ $pinjam->id }})"
-                                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-red-600 transition duration-300">
+                                        class="bg-red-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:bg-red-600 transition duration-300">
                                         Kembalikan
                                     </button>
                                     <button type="button" onclick="openDonationForm({{ $pinjam->id }})"
-                                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-600 transition duration-300">
+                                        class="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:bg-blue-600 transition duration-300">
                                         Donate
                                     </button>
 
@@ -68,7 +67,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="py-4 px-6 text-center text-gray-500">
+                                <td colspan="3" class="py-5 px-6 text-center text-gray-500">
                                     ❌ Tidak ada buku yang sedang dipinjam
                                 </td>
                             </tr>
@@ -114,7 +113,7 @@
                 title: "Masukkan Nominal Donasi",
                 input: "number",
                 inputAttributes: {
-                    min: 1000, // Minimal donasi
+                    min: 0, // Minimal donasi
                     step: 1000 // Kelipatan donasi
                 },
                 showCancelButton: true,
@@ -143,8 +142,9 @@
                     _token: "{{ csrf_token() }}",
                     amount: amount,
                     book_id: bookId,
-                    name: "{{ auth()->user()->name }}",
-                    email: "{{ auth()->user()->email }}",
+                    name: "{{ optional(auth()->user())->name }}",
+                    email: "{{ optional(auth()->user())->email }}",
+
                 },
                 success: function(response) {
                     // Menjalankan pembayaran dengan Midtrans
@@ -197,5 +197,5 @@
     </script>
 
 </body>
-
+S
 </html>

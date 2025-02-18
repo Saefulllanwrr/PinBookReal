@@ -17,12 +17,23 @@
     <!-- Header -->
     <x-navbar />
 
+    <!-- Notifikasi -->
+    @if (session('success'))
+        <div
+            class="fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center justify-between">
+            <span>{{ session('success') }}</span>
+            <button onclick="this.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    @endif
+
     <!-- Hero Section -->
     <main
         class="w-full h-[500px] md:h-[600px] bg-gradient-to-r from-[#0B192C] to-[#1A2A3C] dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
         <div class="container mx-auto h-full flex flex-col md:flex-row items-center justify-center px-6 md:px-12">
             <!-- Teks Sambutan -->
-            <section class="w-[837px] ms-[59px] flex flex-col justify-center" data-aos="fade-right">
+            <section class="w-[837px] ms-[59px] flex flex-col justify-center " data-aos="fade-right">
                 <h2 class="font-poppins font-bold text-[40px] text-white pt-[70px]">
                     Selamat datang
                     @if (Auth::check())
@@ -88,6 +99,65 @@
         </div>
     </section>
 
+    <!-- Kontak Section -->
+    <!-- Kontak Section -->
+    <section id="kontak" class="w-full py-10 bg-white" data-aos="fade-up">
+        <div class="container mx-auto px-6">
+            <!-- Judul Kontak -->
+            <h2 class="text-[36px] font-poppins font-bold text-[#0B192C] text-center mb-8" data-aos="zoom-in">
+                Hubungi Kami
+            </h2>
+
+            <!-- Form Kontak -->
+            <div class="max-w-2xl mx-auto bg-[#F4F4F4] p-8 rounded-lg shadow-md" data-aos="fade-up"
+                data-aos-delay="200">
+                <form action="{{ route('contact.submit') }}" method="POST">
+                    @csrf
+                    <div class="mb-6">
+                        <label for="name" class="block font-poppins font-medium text-[#0B192C] mb-2">Nama</label>
+                        <input type="text" id="name" name="name" required
+                            class="w-full px-4 py-2 rounded-lg border border-[#D9D9D9] focus:outline-none focus:border-[#FF6500]"
+                            placeholder="Masukkan nama Anda">
+                    </div>
+                    <div class="mb-6">
+                        <label for="email" class="block font-poppins font-medium text-[#0B192C] mb-2">Email</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-4 py-2 rounded-lg border border-[#D9D9D9] focus:outline-none focus:border-[#FF6500]"
+                            placeholder="Masukkan email Anda">
+                    </div>
+                    <div class="mb-6">
+                        <label for="message" class="block font-poppins font-medium text-[#0B192C] mb-2">Pesan</label>
+                        <textarea id="message" name="message" rows="5" required
+                            class="w-full px-4 py-2 rounded-lg border border-[#D9D9D9] focus:outline-none focus:border-[#FF6500]"
+                            placeholder="Masukkan pesan Anda"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit"
+                            class="w-full bg-[#FF6500] text-white py-2 rounded-lg font-bold hover:bg-[#E55A00]">
+                            Kirim Pesan
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Informasi Kontak -->
+            <div class="mt-12 text-center" data-aos="fade-up" data-aos-delay="400">
+                <h3 class="font-poppins font-bold text-[24px] text-[#0B192C] mb-4">Atau hubungi kami melalui:</h3>
+                <div class="flex justify-center items-center gap-6">
+                    <a href="mailto:info@pinbook.com" class="text-[#FF6500] hover:text-[#E55A00]">
+                        <i class="fas fa-envelope text-3xl"></i>
+                    </a>
+                    <a href="https://wa.me/62085720800889" class="text-[#FF6500] hover:text-[#E55A00]">
+                        <i class="fab fa-whatsapp text-3xl"></i>
+                    </a>
+                    <a href="https://www.instagram.com/saefullanwrrr" class="text-[#FF6500] hover:text-[#E55A00]">
+                        <i class="fab fa-instagram text-3xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <x-footer />
 
@@ -96,6 +166,34 @@
         AOS.init({
             duration: 1000, // Durasi animasi dalam milidetik
             once: true, // Animasi hanya berjalan sekali saat pertama kali muncul
+        });
+    </script>
+
+    <!-- Script untuk menghilangkan notifikasi otomatis -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault(); // Mencegah perilaku default
+                const targetId = this.getAttribute('href').substring(1); // Ambil ID target
+                const targetElement = document.getElementById(targetId); // Dapatkan elemen target
+
+                if (targetElement) {
+                    // Scroll ke elemen target dengan efek smooth
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const notification = document.querySelector('.fixed.bg-green-500');
+            if (notification) {
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000); // 5000 milidetik = 5 detik
+            }
         });
     </script>
 </body>

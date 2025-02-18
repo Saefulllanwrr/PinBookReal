@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UsersResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -48,10 +49,17 @@ class UsersResource extends Resource
                     ->unique(User::class, 'email')
                     ->maxLength(255),
 
+
+
+                TextInput::make('no_telepon')
+                    ->numeric()
+                    ->label('No Telepon'),
+
+
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
-                    ->required()
+
                     ->minLength(8)
                     ->maxLength(255),
 
@@ -63,11 +71,7 @@ class UsersResource extends Resource
                         'user' => 'User',
                     ])
                     ->required(),
-                FileUpload::make('profiles')
-                    ->disk('public')
-                    ->directory('cover')
-                    ->visibility('public')
-                    ->required(),
+
             ]);
     }
 
@@ -80,14 +84,18 @@ class UsersResource extends Resource
                 TextColumn::make('username'),
                 TextColumn::make('email'),
                 TextColumn::make('role'),
-                ImageColumn::make('profiles')
-                    ->disk('public')
-                    ->width(100)
-                    ->height(100),
+                TextColumn::make('no_telepon'),
+
+
 
             ])
             ->filters([
-                //
+                SelectFilter::make('role')
+                    ->options([
+                        'admin' => 'Admin',
+                        'user' => 'User',
+
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

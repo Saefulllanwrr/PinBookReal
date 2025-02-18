@@ -13,7 +13,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $kategori = Kategori::all();
-        $booksQuery = Book::query();
+        $booksQuery = Book::with('kategori'); // Tambahkan with('kategori') di sini
 
         // Filter berdasarkan kategori jika dipilih
         if ($request->has('kategori') && $request->kategori != '') {
@@ -34,6 +34,7 @@ class BookController extends Controller
 
         return view('books.katalogBuku', compact('kategori', 'books'));
     }
+
     public function searchForUser(Request $request)
     {
         $query = $request->input('query');
@@ -42,14 +43,17 @@ class BookController extends Controller
         $kategori = Kategori::all();
 
         // Cari buku berdasarkan judul, penulis, atau penerbit
-        $books = Book::where('judul', 'like', '%' . $query . '%')
+        $books = Book::with('kategori') // Tambahkan with('kategori') di sini
+            ->where('judul', 'like', '%' . $query . '%')
             ->orWhere('penulis', 'like', '%' . $query . '%')
             ->orWhere('penerbit', 'like', '%' . $query . '%')
             ->paginate(12);
 
+
         // Arahkan ke halaman katalog dengan hasil pencarian
         return view('books.katalogBuku', compact('kategori', 'books'));
     }
+
 
     public function getBookDetail($id)
     {

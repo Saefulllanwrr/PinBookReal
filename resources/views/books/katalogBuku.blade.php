@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PinBook Katalog</title>
-    @vite('resources/css/app.css')
+    @vite(['resources/css/pagination.css', 'resources/css/app.css'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
@@ -41,8 +41,6 @@
             @endforeach
         </select>
     </div>
-
-    <!-- Hasil Pencarian -->
     <div class="container mx-auto px-4 mt-8">
         @if ($books->isEmpty())
             <div class="text-center text-slate-500 dark:text-gray-400 text-xl font-medium py-12">
@@ -51,23 +49,33 @@
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 @foreach ($books as $book)
-                    <div class="bg-white dark:bg-gray-700 shadow-2xl rounded-3xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-3xl duration-300"
-                        onclick="openModal({{ $book->id }})">
-                        <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
-                            class="w-full h-72 object-cover rounded-t-3xl">
-
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">{{ $book->judul }}
-                            </h3>
-                            <p class="text-slate-600 dark:text-gray-300 text-sm mt-2 flex items-center">
-                                <i class="fas fa-user-edit mr-2"></i> Penulis: {{ $book->penulis }}
-                            </p>
-                            <p class="text-slate-600 dark:text-gray-300 text-sm flex items-center">
-                                <i class="fas fa-building mr-2"></i> Penerbit: {{ $book->penerbit }}
-                            </p>
+                    <div
+                        class="bg-white dark:bg-gray-700 shadow-2xl rounded-3xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-3xl duration-300">
+                        <!-- Bagian yang membuka modal saat diklik -->
+                        <div onclick="openModal({{ $book->id }})" class="cursor-pointer">
+                            <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
+                                class="w-full h-72 object-cover rounded-t-3xl">
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">
+                                    {{ $book->judul }}</h3>
+                                <p class="text-slate-600 dark:text-gray-300 text-sm mt-2 flex items-center">
+                                    Penulis: {{ $book->penulis }}
+                                </p>
+                                <p class="text-slate-600 dark:text-gray-300 text-sm flex items-center">
+                                    Penerbit: {{ $book->penerbit }}
+                                </p>
+                                <p class="text-slate-600 dark:text-gray-300 text-sm flex items-center">
+                                    Kategori:
+                                    {{ $book->kategori->nama_kategori }}
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Tombol Pinjam Buku -->
+                        <div class="p-5">
                             <a href="{{ route('peminjaman', ['id' => $book->id]) }}">
                                 <button
-                                    class="w-full bg-[#FF6500] text-white py-3 mt-6 rounded-xl font-bold hover:bg-[#E55A00] transition duration-300 transform hover:scale-105 flex items-center justify-center">
+                                    class="w-full bg-[#FF6500] text-white py-3 rounded-xl font-bold hover:bg-[#E55A00] transition duration-300 transform hover:scale-105 flex items-center justify-center"
+                                    onclick="event.stopPropagation()">
                                     <i class="fas fa-book-reader mr-2"></i> Pinjam Buku
                                 </button>
                             </a>
@@ -76,11 +84,16 @@
                 @endforeach
             </div>
             <!-- Pagination -->
-            <div class="mt-8 flex justify-center">
-                {{ $books->links() }}
+            <div class="my-8 flex justify-center">
+                {{ $books->links('vendor.pagination.custom') }}
             </div>
+
+
         @endif
     </div>
+
+    <!-- Hasil Pencarian -->
+
 
     <!-- Modal Detail Buku -->
     <div id="modalDetail" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -93,6 +106,8 @@
             <p class="text-slate-600 dark:text-gray-300" id="modalContent"></p>
         </div>
     </div>
+
+
 
     <script>
         // Membuka Modal

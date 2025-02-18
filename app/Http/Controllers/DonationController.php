@@ -12,6 +12,9 @@ class DonationController extends Controller
 {
     public function __construct()
     {
+        // Middleware auth agar hanya user yang login bisa donasi
+
+
         // Konfigurasi Midtrans
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         Config::$isProduction = env('APP_ENV') === 'production';
@@ -53,6 +56,14 @@ class DonationController extends Controller
                 'first_name' => $donation->name,
                 'email' => $donation->email,
             ],
+            'item_details' => [
+                [
+                    'id' => $orderId,
+                    'price' => $donation->amount,
+                    'quantity' => 1,
+                    'name' => "Donasi"
+                ]
+            ],
             'callbacks' => [
                 'finish' => route('peminjaman.index')
             ]
@@ -66,5 +77,46 @@ class DonationController extends Controller
             Log::error('Midtrans Error: ' . $e->getMessage());
             return response()->json(['error' => 'Terjadi kesalahan saat memproses pembayaran.'], 500);
         }
+    }
+
+    /**
+     * Callback dari Midtrans
+     */
+    public function callback(Request $request)
+    {
+        // Verifikasi Signature
+        $serverKey = env('MIDTRANS_SERVER_KEY');
+        $signatureKey = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+
+        if ($signatureKey !== $request->signature_key) {
+            return response()->json(['message' => 'Invalid signature'], 403);
+        }
+
+        // Cari donasi berdasarkan order_id
+        $donation = Donation::where('order_id', $request->order_id)->first();
+
+        if (!$donation) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        // Update status donasi berdasarkan status Midtrans
+        switch ($request->transaction_status) {
+            case 'capture':
+            case 'settlement':
+                $donation->payment_status = 'success';
+                break;
+            case 'pending':
+                $donation->payment_status = 'pending';
+                break;
+            case 'deny':
+            case 'expire':
+            case 'cancel':
+                $donation->payment_status = 'failed';
+                break;
+        }
+
+        $donation->save();
+
+        return response()->json(['message' => 'Callback processed successfully']);
     }
 }

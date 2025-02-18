@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Konfirmasi Peminjaman</title>
     @vite('resources/css/app.css')
-   
+
 </head>
 
 <body class="bg-gradient-to-r from-blue-50 to-purple-50 flex flex-col items-center min-h-screen">
@@ -41,10 +41,10 @@
                 <p class="text-sm text-red-600 mt-4">Batas pengembalian buku maksimal 2 hari setelah dipinjam!</p>
             </div>
             @if (Auth::check())
-                <form action="{{ route('pinjam.store') }}" method="POST" class="mt-6">
-                    @csrf
+                <form action="{{ route('peminjaman.store') }}" method="POST">
+                    @csrf <!-- Tambahkan CSRF token untuk keamanan -->
                     <input type="hidden" name="buku_id" value="{{ $book->id }}">
-                    <button type="submit" class="btn-primary w-full">Pinjam Buku</button>
+                    <button type="submit" class="btn btn-primary">Pinjam Buku</button>
                 </form>
             @else
                 <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk meminjam buku!')"

@@ -15,7 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Mendaftarkan alias 'checkRole' untuk middleware CheckRole
-        $middleware->alias(['checkRole' => CheckRole::class]);
+        $middleware->alias([
+            'checkRole' => CheckRole::class,
+        ]);
+
+        // Validasi CSRF dengan pengecualian
         $middleware->validateCsrfTokens(except: [
             'midtrans/notification'
         ]);

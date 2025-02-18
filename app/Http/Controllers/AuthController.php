@@ -11,69 +11,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    // Menampilkan daftar pengguna untuk admin
-    public function manageUser()
-    {
-        $users = User::all();
-        return view('manageUser', compact('users'));
-    }
 
-    // Menampilkan form registrasi
-    public function showRegisterForm()
-    {
-        return view('register');
-    }
-
-    // Menangani form registrasi
-    public function submitRegister(Request $request)
-    {
-        // Validasi input
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'confirmed',
-                'regex:/[A-Z]/',  // Harus ada huruf besar
-                'regex:/[0-9]/',  // Harus ada angka
-
-            ],
-            [
-                'password.regex' => 'Password harus mengandung minimal satu huruf besar, satu angka, dan satu simbol (@$!%*?&).'
-            ],
-            'profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-        ]);
-
-        // Simpan gambar dengan nama unik jika ada
-        $profilePath = null;
-        if ($request->hasFile('profile')) {
-            $profilePath = $request->file('profile')->storeAs(
-                'profiles',
-                Str::random(20) . '.' . $request->file('profile')->extension(),
-                'public'
-            );
-        }
-
-        // Membuat user baru
-        $user = User::create([
-            'name' => $validated['name'],
-            'username' => $validated['username'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'profile' => $profilePath,
-        ]);
-
-        // Trigger event Registered
-        event(new Registered($user));
-
-        // Auto-login setelah registrasi
-        Auth::login($user);
-
-        return redirect()->route('home')->with('success', 'Registrasi Berhasil!');
-    }
 
     // Menampilkan form login
     public function showLoginForm()
@@ -110,6 +48,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Berhasil Logout!');
+        return redirect()->route('home')->with('success', 'Berhasil Logout!');
     }
 }

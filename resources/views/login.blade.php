@@ -55,10 +55,7 @@
                         class="ml-2 text-sm text-[#FF6500] hover:text-slate-300 transition duration-200">Ingat
                         Saya</label>
                 </div>
-                <a href="{{ route('show.register') }}"
-                    class="text-sm text-[#FF6500] hover:text-slate-300 transition duration-200">
-                    Buat Akun
-                </a>
+
             </div>
 
             <!-- Submit Button -->

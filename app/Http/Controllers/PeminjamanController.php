@@ -141,9 +141,7 @@ class PeminjamanController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) {
-            abort(403, 'Anda harus login untuk melihat riwayat peminjaman.');
-        }
+
 
         // Ambil semua peminjaman, termasuk yang sudah dikembalikan
         $riwayat = Peminjaman::where('user_id', Auth::id())

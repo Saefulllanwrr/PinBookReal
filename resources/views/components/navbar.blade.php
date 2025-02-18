@@ -8,17 +8,23 @@
             <li><a href="{{ route('katalogBuku') }}"
                     class="{{ request()->routeIs('katalogBuku') ? 'text-orange-500' : 'hover:text-orange-500' }}">Buku</a>
             </li>
-            <li><a href="{{ route('peminjaman.index') }}"
-                    class="{{ request()->routeIs('peminjaman.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Peminjaman</a>
-            </li>
-            <li><a href="{{ route('riwayat.index') }}"
-                    class="{{ request()->routeIs('riwayat.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Riwayat</a>
-            </li>
-            <li><a href="{{ route('akun.index') }}"
-                    class="{{ request()->is('akun.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Akun</a>
+            <!-- Menu Peminjaman dan Riwayat hanya ditampilkan jika user sudah login -->
+            @auth
+                <li><a href="{{ route('peminjaman.index') }}"
+                        class="{{ request()->routeIs('peminjaman.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Peminjaman</a>
+                </li>
+                <li><a href="{{ route('riwayat.index') }}"
+                        class="{{ request()->routeIs('riwayat.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Riwayat</a>
+                </li>
+                <li><a href="{{ route('akun.index') }}"
+                        class="{{ request()->is('akun.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Akun</a>
+                </li>
+            @endauth
+            <!-- Tambahkan menu Kontak dengan onclick handler -->
+            <li><a href="#kontak" onclick="handleContactClick(event)"
+                    class="{{ request()->is('#kontak') ? 'text-orange-500' : 'hover:text-orange-500' }}">Kontak</a>
             </li>
         </ul>
-
 
         <!-- Login Button (visible when user is not authenticated) -->
         @guest
@@ -53,5 +59,27 @@
     function toggleDropdown() {
         const dropdown = document.getElementById('dropdownMenu');
         dropdown.classList.toggle('hidden');
+    }
+
+    // Fungsi untuk menangani klik menu Kontak
+    function handleContactClick(event) {
+        // Cek apakah pengguna sedang berada di halaman home
+        const isOnHomePage = window.location.pathname === "{{ route('home') }}";
+
+        if (!isOnHomePage) {
+            // Jika tidak di halaman home, redirect ke halaman home dengan hash #kontak
+            event.preventDefault(); // Mencegah perilaku default anchor link
+            window.location.href = "{{ route('home') }}#kontak";
+        } else {
+            // Jika sudah di halaman home, lakukan smooth scroll ke bagian kontak
+            event.preventDefault(); // Mencegah perilaku default anchor link
+            const targetElement = document.getElementById('kontak');
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
     }
 </script>
