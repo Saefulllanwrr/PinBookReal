@@ -9,20 +9,18 @@ use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
-    // Fungsi pencarian buku untuk pengguna
+    // Menampilkan daftar buku dengan fitur pencarian dan filter kategori
     public function index(Request $request)
     {
         $kategori = Kategori::all();
-        $booksQuery = Book::with('kategori'); // Tambahkan with('kategori') di sini
+        $booksQuery = Book::with('kategori');
 
-        // Filter berdasarkan kategori jika dipilih
-        if ($request->has('kategori') && $request->kategori != '') {
+        if ($request->filled('kategori')) {
             $booksQuery->where('kategori_id', $request->kategori);
         }
 
-        // Pencarian berdasarkan query jika ada
-        if ($request->has('query')) {
-            $query = $request->input('query');
+        if ($request->filled('query')) {
+            $query = $request->query('query');
             $booksQuery->where(function ($q) use ($query) {
                 $q->where('judul', 'like', '%' . $query . '%')
                     ->orWhere('penulis', 'like', '%' . $query . '%')
@@ -31,35 +29,24 @@ class BookController extends Controller
         }
 
         $books = $booksQuery->paginate(8);
+        // Ambil buku yang paling sering dipinjam (favorit)
+        $favoriteBooks = Book::withCount('loans')
+            ->whereHas('loans') // Hanya buku yang memiliki peminjaman
+            ->orderByDesc('loans_count')
+            ->take(5)
+            ->get();
 
-        return view('books.katalogBuku', compact('kategori', 'books'));
+
+        return view('books.katalogBuku', compact('kategori', 'books', 'favoriteBooks'));
     }
 
-    public function searchForUser(Request $request)
-    {
-        $query = $request->input('query');
-
-        // Ambil semua kategori
-        $kategori = Kategori::all();
-
-        // Cari buku berdasarkan judul, penulis, atau penerbit
-        $books = Book::with('kategori') // Tambahkan with('kategori') di sini
-            ->where('judul', 'like', '%' . $query . '%')
-            ->orWhere('penulis', 'like', '%' . $query . '%')
-            ->orWhere('penerbit', 'like', '%' . $query . '%')
-            ->paginate(12);
-
-
-        // Arahkan ke halaman katalog dengan hasil pencarian
-        return view('books.katalogBuku', compact('kategori', 'books'));
-    }
-
-
+    // Menampilkan detail buku dalam format JSON
     public function getBookDetail($id)
     {
-        $book = Book::findOrFail($id);
+        $book = Book::with('kategori')
+            ->select('id', 'judul', 'penulis', 'penerbit', 'deskripsi', 'cover', 'kategori_id')
+            ->findOrFail($id);
 
-        // Mengembalikan data dalam bentuk JSON
         return response()->json([
             'judul' => $book->judul,
             'penulis' => $book->penulis,
@@ -70,33 +57,17 @@ class BookController extends Controller
         ]);
     }
 
-
-
-
-    public function showpeminjaman($book_id)
+    // Menampilkan halaman peminjaman buku
+    public function showPeminjaman($book_id)
     {
         $book = Book::findOrFail($book_id);
         return view('books.peminjaman', compact('book'));
     }
 
+    // Menampilkan halaman home dengan buku terbaru
     public function showHome()
     {
-        $books = Book::orderBy('created_at', 'desc')->limit(4)->get();
-
+        $books = Book::latest()->limit(4)->get();
         return view('home', compact('books'));
-    }
-
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::guard('web')->attempt($credentials)) {
-            // Authentication passed...
-            return redirect()->intended('dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
     }
 }

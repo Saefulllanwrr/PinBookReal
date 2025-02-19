@@ -94,13 +94,21 @@ class PeminjamanResource extends Resource
                     ->color('success')
                     ->action(function (Peminjaman $record) {
                         if ($record->status === 'dipinjam') {
-                            // Update status buku menjadi 'dikembalikan'
+                            // Ambil buku terkait
+                            $book = $record->book;
+
+                            // Update status peminjaman
                             $record->update([
                                 'status' => 'dikembalikan',
                                 'tanggal_kembali' => now(),
                             ]);
 
-                            // Tampilkan notifikasi sukses menggunakan Notification::make()
+                            // Tambah stok buku
+                            if ($book) {
+                                $book->increment('stok');
+                            }
+
+                            // Tampilkan notifikasi sukses
                             Notification::make()
                                 ->title('Buku berhasil dikembalikan!')
                                 ->success()
@@ -117,6 +125,7 @@ class PeminjamanResource extends Resource
                     ->successNotificationTitle('Buku berhasil dikembalikan!'),
                 Tables\Actions\ViewAction::make(),
             ])
+
             ->bulkActions([]);
     }
 

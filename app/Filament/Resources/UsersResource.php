@@ -3,28 +3,27 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
+use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Notifications\Notification;
+use App\Models\User;
 use App\Filament\Resources\UsersResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UsersResource\RelationManagers;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 
 class UsersResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationLabel = 'Daftar Pengguna ';
+    protected static ?string $navigationLabel = 'Daftar Pengguna';
     protected static ?string $navigationGroup = 'Manajemen Pengguna';
 
     public static function form(Form $form): Form
@@ -49,32 +48,33 @@ class UsersResource extends Resource
                     ->unique(User::class, 'email')
                     ->maxLength(255),
 
-
-
                 TextInput::make('no_telepon')
                     ->numeric()
                     ->label('No Telepon'),
 
-
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
+                    ->required()
+                    ->suffixActions([
+                        Action::make('generatePassword')
+                            ->icon('heroicon-o-arrow-path') // Ikon refresh
+                            ->action(function (Set $set) {
+                                $password = Str::random(12); // Generate password random
+                                $set('password', $password);
 
-                    ->minLength(8)
-                    ->maxLength(255),
+                                // Menampilkan password dalam notifikasi
+                                Notification::make()
+                                    ->title('Password Generated')
+                                    ->body("Password: $password")
+                                    ->success()
+                                    ->send();
+                            }),
+                    ]),
 
-
-                Select::make('role')
-                    ->label('Role')
-                    ->options([
-                        'admin' => 'Admin',
-                        'user' => 'User',
-                    ])
-                    ->required(),
 
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
@@ -85,16 +85,12 @@ class UsersResource extends Resource
                 TextColumn::make('email'),
                 TextColumn::make('role'),
                 TextColumn::make('no_telepon'),
-
-
-
             ])
             ->filters([
                 SelectFilter::make('role')
                     ->options([
                         'admin' => 'Admin',
                         'user' => 'User',
-
                     ]),
             ])
             ->actions([
@@ -110,9 +106,7 @@ class UsersResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

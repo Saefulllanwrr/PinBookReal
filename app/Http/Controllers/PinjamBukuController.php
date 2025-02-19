@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book; // Gunakan model Book
+use App\Models\Book;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,32 +18,37 @@ class PinjamBukuController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validasi input
         $request->validate([
-            'buku_id' => 'required|exists:books,id', // Sesuaikan dengan nama tabel books
+            'buku_id' => 'required|exists:books,id',
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
         ]);
 
-        // Cek stok buku
-        $buku = Book::find($request->buku_id); // Gunakan model Book
+        $existingPeminjaman = Peminjaman::where('user_id', Auth::id())
+            ->where('buku_id', $request->buku_id)
+            ->where('status', 'Dipinjam')
+            ->first();
+
+        if ($existingPeminjaman) {
+            return redirect()->back()->with('error', 'Anda sudah meminjam buku ini dan belum mengembalikannya.');
+        }
+
+        $buku = Book::find($request->buku_id);
         if ($buku->stok < 1) {
             return redirect()->back()->with('error', 'Stok buku habis, tidak dapat meminjam.');
         }
 
-        // Buat peminjaman
-        $peminjaman = new Peminjaman();
-        $peminjaman->user_id = Auth::id(); // ID user yang sedang login
-        $peminjaman->buku_id = $request->buku_id;
-        $peminjaman->tanggal_pinjam = $request->tanggal_pinjam; // Sesuaikan dengan kolom model
-        $peminjaman->tanggal_kembali = $request->tanggal_kembali; // Sesuaikan dengan kolom model
-        $peminjaman->status = 'Dipinjam'; // Status awal peminjaman
-        $peminjaman->save();
+        // Simpan data peminjaman
+        Peminjaman::create([
+            'user_id' => Auth::id(),
+            'buku_id' => $request->buku_id,
+            'tanggal_pinjam' => $request->tanggal_pinjam,
+            'tanggal_kembali' => $request->tanggal_kembali,
+            'status' => 'Dipinjam',
+        ]);
 
-        // Kurangi stok buku
-        $buku->stok -= 1;
-        $buku->save();
+        $buku->decrement('stok');
 
-        return redirect()->route('peminjaman.index')->with('success', 'Buku berhasil dipinjam.');
+        return redirect()->route('peminjaman.index')->with('success', 'Buku berhasil dipinjam!');
     }
 }

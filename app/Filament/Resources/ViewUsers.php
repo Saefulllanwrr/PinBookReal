@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Resources;
 
 use Filament\Pages\Page;
 use Filament\Resources\Pages\ViewRecord;

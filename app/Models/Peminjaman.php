@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Book;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -12,11 +10,12 @@ class Peminjaman extends Model
     use HasFactory;
 
     protected $table = "peminjaman";
+
     protected $fillable = [
         'user_id',
-        'buku_id',
-        'tanggal_pinjam', // Sesuaikan dengan nama kolom di database
-        'tanggal_kembali', // Sesuaikan dengan nama kolom di database
+        'buku_id', // Gunakan book_id agar lebih konsisten
+        'tanggal_pinjam',
+        'tanggal_kembali',
         'status',
     ];
 
@@ -24,8 +23,6 @@ class Peminjaman extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
-
 
     public function book()
     {

@@ -75,23 +75,38 @@
             </h2>
 
             <!-- Daftar Buku -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 @foreach ($books as $book)
-                    <!-- Buku Item -->
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-                        <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}"
-                            class="w-full h-[200px] object-cover">
-                        <div class="p-4">
-                            <h3 class="font-poppins font-semibold text-[20px] text-[#0B192C] mb-2">{{ $book->judul }}
-                            </h3>
-                            <div class="mt-auto">
-                                <a href="{{ route('peminjaman', ['id' => $book->id]) }}">
-                                    <button
-                                        class="w-full bg-[#FF6500] text-white py-2 rounded-lg font-bold hover:bg-[#E55A00]">
-                                        Pinjam
-                                    </button>
-                                </a>
+                    <div
+                        class="bg-white dark:bg-gray-700 rounded-3xl overflow-hidden hover:shadow-sm duration-300">
+                        <!-- Bagian yang membuka modal saat diklik -->
+                        <div onclick="openModal({{ $book->id }})" class="cursor-pointer">
+                            <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
+                                class="w-full h-72 object-cover rounded-t-3xl">
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">
+                                    {{ $book->judul }}</h3>
+                                <p class="text-slate-600 dark:text-gray-300 text-sm mt-2 flex items-center">
+                                    Penulis: {{ $book->penulis }}
+                                </p>
+                                <p class="text-slate-600 dark:text-gray-300 text-sm flex items-center">
+                                    Penerbit: {{ $book->penerbit }}
+                                </p>
+                                <p class="text-slate-600 dark:text-gray-300 text-sm flex items-center">
+                                    Kategori:
+                                    {{ $book->kategori->nama_kategori }}
+                                </p>
                             </div>
+                        </div>
+                        <!-- Tombol Pinjam Buku -->
+                        <div class="p-5">
+                            <a href="{{ route('peminjaman', ['id' => $book->id]) }}">
+                                <button
+                                    class="w-full bg-[#FF6500] text-white py-3 rounded-xl font-bold hover:bg-[#E55A00] transition duration-300 transform hover:scale-105 flex items-center justify-center"
+                                    onclick="event.stopPropagation()">
+                                    <i class="fas fa-book-reader mr-2"></i> Pinjam Buku
+                                </button>
+                            </a>
                         </div>
                     </div>
                 @endforeach

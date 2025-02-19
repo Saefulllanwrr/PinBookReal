@@ -2,31 +2,40 @@
 
 namespace App\Models;
 
-use App\Models\Kategori;
-use App\Models\Peminjaman;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Book extends Model
 {
+    use HasFactory;
+
+    protected $table = 'books';
+
+    protected $fillable = [
+        'judul',
+        'penerbit',
+        'penulis',
+        'deskripsi',
+        'diterbitkan',
+        'cover',
+        'stok',
+        'status',
+        'kategori_id',
+        'borrow_count',
+    ];
 
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
+
     public function peminjaman()
     {
-        return $this->hasMany(Peminjaman::class);
+        return $this->hasMany(Peminjaman::class, 'buku_id');
     }
 
-    public function riwayat()
+    public function loans()
     {
-        return $this->hasMany(Riwayat::class);
+        return $this->hasMany(Peminjaman::class, 'buku_id'); // Tetap gunakan 'buku_id'
     }
-    use HasFactory;
-
-    protected $table = 'books';
-
-    // Menentukan field yang bisa diisi massal
-    protected $fillable = ['judul', 'penerbit', 'penulis', 'deskripsi', 'diterbitkan', 'cover', 'stok', 'status'];
 }

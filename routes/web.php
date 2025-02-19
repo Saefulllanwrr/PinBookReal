@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
@@ -39,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // View katalog
-Route::get('/katalog-buku', [BookController::class, 'searchForUser'])->name('katalogBuku');
+Route::get('/katalog-buku', [BookController::class, 'index'])->name('katalogBuku');
 Route::get('/books', [BookController::class, 'index'])->name('books.katalogBuku');
 Route::get('/books/detail/{id}', [BookController::class, 'getBookDetail'])->name('books.detail');
 Route::get('/katalog', [BookController::class, 'index'])->name('books.katalogBuku');
@@ -51,7 +52,9 @@ Route::get('/peminjaman/{id}', [BookController::class, 'showPeminjaman'])->name(
 Route::middleware(['auth'])->group(function () {
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
     Route::post('/peminjaman', [PinjamBukuController::class, 'store'])->name('peminjaman.store');
-    Route::get('/riwayat', [PeminjamanController::class, 'riwayat'])->name('riwayat.index');
+    Route::get('/buku-favorit', [PinjamBukuController::class, 'bukuFavorit'])->name('bukuFavorit');
+
+    Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat.index');
     Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
 });
 
