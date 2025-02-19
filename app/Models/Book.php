@@ -19,6 +19,10 @@ class Book extends Model
         return $this->hasMany(Peminjaman::class);
     }
 
+    public function riwayat()
+    {
+        return $this->hasMany(Riwayat::class);
+    }
     use HasFactory;
 
     protected $table = 'books';

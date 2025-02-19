@@ -7,7 +7,7 @@ use Filament\Widgets\ChartWidget;
 
 class BookChart extends ChartWidget
 {
-    protected static ?string $heading = 'Statistik Buku';
+    protected static ?string $heading = 'Statistik Peminjaman';
     protected static ?int $sort = 2; // Urutan widget
 
     protected function getType(): string
@@ -18,8 +18,8 @@ class BookChart extends ChartWidget
     protected function getData(): array
     {
         $totalBooks = Book::count();
-        $borrowedBooks = Book::where('status', 'dipinjam')->count();
-        $availableBooks = Book::where('status', 'tersedia')->count();
+        $borrowedBooks = Book::where('status', 'not available')->count(); // Menggunakan status yang benar
+        $availableBooks = Book::where('status', 'available')->count(); // Menggunakan status yang benar
 
         return [
             'labels' => ['Total Buku', 'Dipinjam', 'Tersedia'],

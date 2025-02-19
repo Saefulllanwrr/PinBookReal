@@ -11,13 +11,20 @@ class Peminjaman extends Model
 {
     use HasFactory;
 
-    protected $table = 'peminjaman';
-    protected $fillable = ['user_id', 'buku_id', 'tanggal_pinjam', 'tanggal_kembali', 'status'];
+    protected $table = "peminjaman";
+    protected $fillable = [
+        'user_id',
+        'buku_id',
+        'tanggal_pinjam', // Sesuaikan dengan nama kolom di database
+        'tanggal_kembali', // Sesuaikan dengan nama kolom di database
+        'status',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
 
 
     public function book()

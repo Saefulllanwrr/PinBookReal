@@ -14,9 +14,6 @@
 
 <body>
 
-    <!-- Header -->
-    <x-navbar />
-
     <!-- Notifikasi -->
     @if (session('success'))
         <div
@@ -27,6 +24,9 @@
             </button>
         </div>
     @endif
+    <!-- Header -->
+    <x-navbar />
+
 
     <!-- Hero Section -->
     <main
@@ -99,7 +99,7 @@
         </div>
     </section>
 
-    <!-- Kontak Section -->
+
     <!-- Kontak Section -->
     <section id="kontak" class="w-full py-10 bg-white" data-aos="fade-up">
         <div class="container mx-auto px-6">

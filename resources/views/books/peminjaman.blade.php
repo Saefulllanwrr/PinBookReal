@@ -41,10 +41,14 @@
                 <p class="text-sm text-red-600 mt-4">Batas pengembalian buku maksimal 2 hari setelah dipinjam!</p>
             </div>
             @if (Auth::check())
-                <form action="{{ route('peminjaman.store') }}" method="POST">
-                    @csrf <!-- Tambahkan CSRF token untuk keamanan -->
+                <form action="{{ route('peminjaman.store') }}" method="POST" class="mt-6">
+                    @csrf
                     <input type="hidden" name="buku_id" value="{{ $book->id }}">
-                    <button type="submit" class="btn btn-primary">Pinjam Buku</button>
+                    <input type="hidden" name="tanggal_pinjam" value="{{ \Carbon\Carbon::today()->toDateString() }}">
+                    <input type="hidden" name="tanggal_kembali"
+                        value="{{ \Carbon\Carbon::today()->addDays(2)->toDateString() }}">
+
+                    <button type="submit" class="btn-primary w-full">Pinjam Buku</button>
                 </form>
             @else
                 <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk meminjam buku!')"

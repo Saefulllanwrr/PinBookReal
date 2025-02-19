@@ -13,7 +13,8 @@
     <div class="min-h-screen flex justify-center items-center">
         <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
             <div class="flex flex-col items-center">
-                <img src="https://via.placeholder.com/100" alt="Foto Profil" class="rounded-full mb-4 w-24 h-24">
+                <img src="{{ asset('storage/' . Auth::user()->avatar_path) }}" alt="Foto Profil"
+                    class="rounded-full mb-4 w-24 h-24">
                 <h2 class="text-2xl font-semibold">{{ $users->name }}</h2>
                 <p class="text-gray-600">{{ $users->email }}</p>
                 <button

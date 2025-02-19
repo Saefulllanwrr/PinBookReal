@@ -8,11 +8,13 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use App\Models\Peminjaman;
 use Filament\Tables\Table;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -78,7 +80,6 @@ class PeminjamanResource extends Resource
                 TextColumn::make('tanggal_kembali')
                     ->label('Tanggal Kembali')
                     ->sortable(),
-                // Ganti BadgeColumn dengan TextColumn dan set warna
                 TextColumn::make('status')
                     ->label('Status')
                     ->colors([
@@ -87,30 +88,37 @@ class PeminjamanResource extends Resource
                     ])
                     ->searchable(),
             ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        'dipinjam' => 'Dipinjam',
-                        'dikembalikan' => 'Dikembalikan',
-                    ]),
-                Filter::make('tanggal_pinjam')
-                    ->form([
-                        Forms\Components\DatePicker::make('tanggal_pinjam'),
-                    ])
-                    ->query(
-                        fn(Builder $query, array $data): Builder =>
-                        isset($data['tanggal_pinjam'])
-                            ? $query->whereDate('tanggal_pinjam', $data['tanggal_pinjam'])
-                            : $query
-                    ),
-            ])
             ->actions([
+                Tables\Actions\Action::make('kembalikan')
+                    ->label('Kembalikan')
+                    ->color('success')
+                    ->action(function (Peminjaman $record) {
+                        if ($record->status === 'dipinjam') {
+                            // Update status buku menjadi 'dikembalikan'
+                            $record->update([
+                                'status' => 'dikembalikan',
+                                'tanggal_kembali' => now(),
+                            ]);
+
+                            // Tampilkan notifikasi sukses menggunakan Notification::make()
+                            Notification::make()
+                                ->title('Buku berhasil dikembalikan!')
+                                ->success()
+                                ->send();
+                        } else {
+                            // Tampilkan notifikasi error jika status bukan 'dipinjam'
+                            Notification::make()
+                                ->title('Buku ini sudah dikembalikan atau tidak dapat diproses.')
+                                ->danger()
+                                ->send();
+                        }
+                    })
+                    ->requiresConfirmation()
+                    ->successNotificationTitle('Buku berhasil dikembalikan!'),
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([]);
     }
-
 
 
 

@@ -14,9 +14,7 @@ class StatsOverview extends BaseWidget
         $countBook = Book::count();
 
         // Buku yang sedang dipinjam
-        $borrowedBooks = Book::where('status', 'borrowed')->count();
-
-        // Buku yang masih tersedia
+        $borrowedBooks = Book::where('status', 'not available')->count(); // Menggunakan status yang benar
         $availableBooks = Book::where('status', 'available')->count();
 
         return [

@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\Book;
 use Filament\Forms;
+use App\Models\Book;
 use Filament\Tables;
+use App\Models\Kategori;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Resources\BooksResource\Pages;
-use App\Models\Kategori;
 
 class BooksResource extends Resource
 {
@@ -100,7 +101,14 @@ class BooksResource extends Resource
                     ->width(100)
                     ->height(100),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('kategori_id')
+                    ->label('Kategori')
+                    ->relationship('kategori', 'nama_kategori')
+                    ->searchable()
+                    ->preload(),
+
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

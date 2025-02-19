@@ -4,10 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PinjamBukuController;
 use App\Http\Controllers\notificationController;
 
 // Halaman Home (hanya bisa diakses oleh user dengan role 'user')
@@ -42,18 +44,16 @@ Route::get('/books', [BookController::class, 'index'])->name('books.katalogBuku'
 Route::get('/books/detail/{id}', [BookController::class, 'getBookDetail'])->name('books.detail');
 Route::get('/katalog', [BookController::class, 'index'])->name('books.katalogBuku');
 
-
 // View detail peminjaman
 Route::get('/peminjaman/{id}', [BookController::class, 'showPeminjaman'])->name('peminjaman');
 
 // Grup route yang memerlukan autentikasi
-
-Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-// Route untuk proses peminjaman buku
-Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
-Route::get('/riwayat', [PeminjamanController::class, 'riwayat'])->name('riwayat.index');
-
-Route::get('/akun', [AkunController::class, 'index'])->name('akun.index')->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::post('/peminjaman', [PinjamBukuController::class, 'store'])->name('peminjaman.store');
+    Route::get('/riwayat', [PeminjamanController::class, 'riwayat'])->name('riwayat.index');
+    Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
+});
 
 // Donation routes
 Route::post('/donate/process', [DonationController::class, 'process'])->name('donate.process')->middleware('auth');

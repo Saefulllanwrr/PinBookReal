@@ -11,6 +11,8 @@
         "filament/forms": "^3.2",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "laravel/ui": "^4.6",
+        "laravolt/avatar": "^6.0",
         "midtrans/midtrans-php": "^2.6",
         "phpmailer/phpmailer": "^6.9",
         "rap2hpoutre/laravel-log-viewer": "^2.4"

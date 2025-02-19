@@ -19,15 +19,13 @@
     <!-- Alert Section -->
     @guest
         <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk meminjam buku!')" class="block mt-6">
-            
+
         </a>
     @endguest
-
     <div class="container mx-auto px-4">
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h2 class="text-3xl font-bold mb-6 text-gray-800">📖 Riwayat Peminjaman</h2>
 
-            <!-- Tabel Responsive -->
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white rounded-lg shadow-sm">
                     <thead>
@@ -44,13 +42,13 @@
                                 <td class="py-4 px-6">{{ $item->book->judul }}</td>
                                 <td class="py-4 px-6">{{ $item->tanggal_pinjam }}</td>
                                 <td class="py-4 px-6">{{ $item->tanggal_kembali ?? '-' }}</td>
-                                <td class="py-4 px-6 text-center">
-                                    @if ($item->tanggal_kembali)
-                                        <span
-                                            class="px-3 py-1 text-sm font-semibold text-green-600 bg-green-100 rounded-full">Dikembalikan</span>
-                                    @else
-                                        <span
-                                            class="px-3 py-1 text-sm font-semibold text-red-600 bg-red-100 rounded-full">Dipinjam</span>
+                                <td class="py-4 px-6">
+                                    @if ($item->status === 'dipinjam')
+                                        <span class="text-yellow-500 font-semibold">{{ $item->status }}</span>
+                                    @elseif($item->status === 'dikembalikan')
+                                        <span class="text-green-500 font-semibold">{{ $item->status }}</span>
+                                    @elseif($item->status === 'terlambat')
+                                        <span class="text-red-500 font-semibold">{{ $item->status }}</span>
                                     @endif
                                 </td>
                             </tr>
@@ -66,6 +64,7 @@
             </div>
         </div>
     </div>
+
 
 </body>
 

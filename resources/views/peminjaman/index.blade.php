@@ -47,22 +47,12 @@
                                 <td class="py-5 px-6">{{ $pinjam->book->judul }}</td>
                                 <td class="py-5 px-6">{{ $pinjam->tanggal_pinjam }}</td>
                                 <td class="py-5 px-6 text-center space-x-4">
-                                    <!-- Tombol Pengembalian Buku -->
-                                    <button type="button" onclick="confirmReturn({{ $pinjam->id }})"
-                                        class="bg-red-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:bg-red-600 transition duration-300">
-                                        Kembalikan
-                                    </button>
+
                                     <button type="button" onclick="openDonationForm({{ $pinjam->id }})"
                                         class="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:bg-blue-600 transition duration-300">
                                         Donate
                                     </button>
 
-                                    <!-- Formulir pengembalian buku -->
-                                    <form id="return-form-{{ $pinjam->id }}"
-                                        action="{{ route('buku.kembalikan', $pinjam->id) }}" method="POST"
-                                        class="hidden">
-                                        @csrf
-                                    </form>
                                 </td>
                             </tr>
                         @empty
@@ -79,32 +69,6 @@
     </div>
 
     <script>
-        /**
-         * Menampilkan konfirmasi sebelum mengembalikan buku
-         */
-        function confirmReturn(bookId) {
-            Swal.fire({
-                title: "Konfirmasi Pengembalian",
-                text: "Apakah Anda yakin ingin mengembalikan buku ini?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Kembalikan",
-                cancelButtonText: "Batal"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit form pengembalian buku
-                    let form = document.getElementById("return-form-" + bookId);
-                    if (form) {
-                        form.submit();
-                    } else {
-                        Swal.fire("Error", "Formulir tidak ditemukan!", "error");
-                    }
-                }
-            });
-        }
-
         /**
          * Menampilkan form input untuk donasi
          */
@@ -198,4 +162,5 @@
 
 </body>
 S
+
 </html>

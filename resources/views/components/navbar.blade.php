@@ -8,7 +8,6 @@
             <li><a href="{{ route('katalogBuku') }}"
                     class="{{ request()->routeIs('katalogBuku') ? 'text-orange-500' : 'hover:text-orange-500' }}">Buku</a>
             </li>
-            <!-- Menu Peminjaman dan Riwayat hanya ditampilkan jika user sudah login -->
             @auth
                 <li><a href="{{ route('peminjaman.index') }}"
                         class="{{ request()->routeIs('peminjaman.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Peminjaman</a>
@@ -16,32 +15,34 @@
                 <li><a href="{{ route('riwayat.index') }}"
                         class="{{ request()->routeIs('riwayat.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Riwayat</a>
                 </li>
-                <li><a href="{{ route('akun.index') }}"
-                        class="{{ request()->is('akun.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Akun</a>
-                </li>
+
             @endauth
-            <!-- Tambahkan menu Kontak dengan onclick handler -->
             <li><a href="#kontak" onclick="handleContactClick(event)"
                     class="{{ request()->is('#kontak') ? 'text-orange-500' : 'hover:text-orange-500' }}">Kontak</a>
             </li>
         </ul>
 
-        <!-- Login Button (visible when user is not authenticated) -->
         @guest
             <a href="{{ route('login') }}"
                 class="bg-orange-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-orange-600">Login</a>
         @endguest
 
-        <!-- Profile Button (visible when user is authenticated) -->
         @auth
             <div class="relative">
                 <button onclick="toggleDropdown()"
                     class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 hover:bg-gray-400">
-                    <img src="{{ asset('storage/' . Auth::user()->profile) }}" alt="Profile"
-                        class="w-full h-full rounded-full object-cover">
+                    <!-- Cek apakah avatarPath ada -->
+                    @if (Auth::user()->avatar_path)
+                        <img src="{{ asset('storage/' . Auth::user()->avatar_path) }}" alt="Avatar"
+                            class="w-full h-full rounded-full object-cover">
+                    @else
+                        <!-- Tampilkan placeholder jika avatarPath tidak ada -->
+                        <span class="text-gray-700">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                    @endif
                 </button>
                 <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
-                    <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil</a>
+                    <a href="{{ route('akun.index') }}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil</a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit"
@@ -61,18 +62,14 @@
         dropdown.classList.toggle('hidden');
     }
 
-    // Fungsi untuk menangani klik menu Kontak
     function handleContactClick(event) {
-        // Cek apakah pengguna sedang berada di halaman home
         const isOnHomePage = window.location.pathname === "{{ route('home') }}";
 
         if (!isOnHomePage) {
-            // Jika tidak di halaman home, redirect ke halaman home dengan hash #kontak
-            event.preventDefault(); // Mencegah perilaku default anchor link
+            event.preventDefault();
             window.location.href = "{{ route('home') }}#kontak";
         } else {
-            // Jika sudah di halaman home, lakukan smooth scroll ke bagian kontak
-            event.preventDefault(); // Mencegah perilaku default anchor link
+            event.preventDefault();
             const targetElement = document.getElementById('kontak');
             if (targetElement) {
                 targetElement.scrollIntoView({
