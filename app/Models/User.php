@@ -29,6 +29,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->role === 'admin'; // Hanya admin yang bisa masuk ke Filament
     }
 
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+
     /**
      * Mengecek apakah user memiliki role tertentu.
      */
@@ -51,6 +57,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'profile',
         'role',
+        'remember_token',
     ];
 
     /**

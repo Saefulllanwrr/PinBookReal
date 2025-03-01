@@ -22,13 +22,13 @@
 
     <div class="container mx-auto mt-8 px-4">
         <div class="bg-white shadow-lg rounded-xl p-8">
-            <h2 class="text-3xl font-bold mb-8 text-gray-800">📚 Buku yang Sedang Dipinjam</h2>
+            <h2 class="text-3xl font-bold mb-8 text-gray-800">Buku yang Sedang Dipinjam</h2>
 
             <!-- Notifikasi Pesan -->
             @if (session('status'))
                 <div
                     class="flex items-center bg-green-500 text-white text-sm font-semibold p-4 rounded-lg shadow-md mb-6">
-                    ✅ {{ session('status') }}
+                    {{ session('status') }}
                 </div>
             @endif
 
@@ -48,18 +48,16 @@
                                 <td class="py-5 px-6">{{ $pinjam->book->judul }}</td>
                                 <td class="py-5 px-6">{{ $pinjam->tanggal_pinjam }}</td>
                                 <td class="py-5 px-6 text-center space-x-4">
-
                                     <button type="button" onclick="openDonationForm({{ $pinjam->id }})"
                                         class="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:bg-blue-600 transition duration-300">
                                         Donate
                                     </button>
-
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="3" class="py-5 px-6 text-center text-gray-500">
-                                    ❌ Tidak ada buku yang sedang dipinjam
+                                    Tidak ada buku yang sedang dipinjam
                                 </td>
                             </tr>
                         @endforelse
@@ -152,7 +150,7 @@
             }
 
             Swal.fire({
-                title: status === "success" ? "Berhasil!" : "Gagal!",
+                title: status === "success" ? "Berhasil" : "Gagal",
                 text: message,
                 icon: status === "success" ? "success" : "error"
             }).then(() => {

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
@@ -28,13 +29,16 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Coba username dengan username atau email
+        // Cek apakah "Remember Me" dicentang
+        $remember = $request->has('remember');
+
+        // Coba login dengan username atau email
         if (
-            Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']]) ||
-            Auth::attempt(['email' => $credentials['username'], 'password' => $credentials['password']])
+            Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']], $remember) ||
+            Auth::attempt(['email' => $credentials['username'], 'password' => $credentials['password']], $remember)
         ) {
             $request->session()->regenerate();
-            return redirect()->intended('/')->with('success', 'login Berhasil!');
+            return redirect()->route('home')->with('success', 'Login Berhasil!');
         }
 
         return back()->with('error', 'Username atau Password salah');
@@ -48,6 +52,8 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')->with('success', 'Berhasil Logout!');
+        // Hapus cookie "Remember Me"
+        $cookie = Cookie::forget(Auth::getRecallerName());
+        return redirect()->route('home')->with('success', 'Berhasil Logout!')->withCookie($cookie);
     }
 }

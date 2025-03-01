@@ -34,16 +34,15 @@ return [
     | Supported: "session"
     |
     */
-
     'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
 
-        'admin' => [ // Guard untuk Filament
+        'admin' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'admins',
         ],
     ],
 
@@ -51,6 +50,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
     ],
 

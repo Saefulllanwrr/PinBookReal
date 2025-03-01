@@ -60,7 +60,7 @@ class UsersResource extends Resource
                         Action::make('generatePassword')
                             ->icon('heroicon-o-arrow-path') // Ikon refresh
                             ->action(function (Set $set) {
-                                $password = Str::random(12); // Generate password random
+                                $password = Str::random(8); // Generate password random
                                 $set('password', $password);
 
                                 // Menampilkan password dalam notifikasi
@@ -80,11 +80,11 @@ class UsersResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('username'),
-                TextColumn::make('email'),
-                TextColumn::make('role'),
-                TextColumn::make('no_telepon'),
+                TextColumn::make('name')->label('Nama'),
+                TextColumn::make('username')->label('Username'),
+                TextColumn::make('email')->label('Email'),
+                TextColumn::make('role')->label('Role'),
+                TextColumn::make('no_telepon')->label('No Telepon'),
             ])
             ->filters([
                 SelectFilter::make('role')
@@ -96,6 +96,23 @@ class UsersResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('resetPassword')
+                    ->label('Reset Password')
+                    ->icon('heroicon-o-key')
+                    ->action(function (User $record) {
+                        $newPassword = Str::random(8); // Generate password baru
+                        $record->update([
+                            'password' => bcrypt($newPassword), // Simpan password yang sudah di-hash
+                        ]);
+
+                        // Tampilkan notifikasi ke admin
+                        Notification::make()
+                            ->title('Password Reset Berhasil')
+                            ->body("Password baru untuk {$record->name}: $newPassword")
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation(), // Konfirmasi sebelum reset
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -103,6 +120,7 @@ class UsersResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {

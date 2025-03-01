@@ -15,7 +15,7 @@ class RiwayatController extends Controller
         $riwayat = Peminjaman::where('user_id', Auth::id())
             ->with('book')
             ->latest()
-            ->get();
+            ->paginate(5);
 
         return view('riwayat.index', compact('riwayat'));
     }

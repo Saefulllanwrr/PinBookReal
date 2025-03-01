@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Book;
+use App\Models\Peminjaman;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -14,7 +15,7 @@ class StatsOverview extends BaseWidget
         $countBook = Book::count();
 
         // Buku yang sedang dipinjam
-        $borrowedBooks = Book::where('status', 'not available')->count(); // Menggunakan status yang benar
+        $borrowedBooks = Peminjaman::where('status', 'dipinjam')->count(); // Menggunakan status yang benar
         $availableBooks = Book::where('status', 'available')->count();
 
         return [

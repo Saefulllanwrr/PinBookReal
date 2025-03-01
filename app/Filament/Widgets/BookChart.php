@@ -3,22 +3,23 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Book;
+use App\Models\Peminjaman;
 use Filament\Widgets\ChartWidget;
 
 class BookChart extends ChartWidget
 {
     protected static ?string $heading = 'Statistik Peminjaman';
-    protected static ?int $sort = 2; // Urutan widget
+    protected static ?int $sort = 3; // Urutan widget
 
     protected function getType(): string
     {
-        return 'bar'; // Bisa diganti dengan 'line', 'pie', dll.
+        return 'line';    // Bisa diganti dengan 'line', 'pie', dll.
     }
 
     protected function getData(): array
     {
         $totalBooks = Book::count();
-        $borrowedBooks = Book::where('status', 'not available')->count(); // Menggunakan status yang benar
+        $borrowedBooks = Peminjaman::where('status', 'dipinjam')->count(); // Menggunakan status yang benar
         $availableBooks = Book::where('status', 'available')->count(); // Menggunakan status yang benar
 
         return [

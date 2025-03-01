@@ -30,16 +30,18 @@
                 <i class="fas fa-search mr-2"></i> Cari
             </button>
         </form>
-        <select
-            class="h-14 px-4 rounded-2xl border border-slate-300 dark:border-gray-600 shadow-lg focus:outline-none text-slate-700 dark:text-white dark:bg-gray-700"
-            aria-label="Filter Kategori" onchange="this.form.submit()" name="kategori">
-            <option value="">Semua Kategori</option>
-            @foreach ($kategori as $kategoris)
-                <option value="{{ $kategoris->id }}" {{ request('kategori') == $kategoris->id ? 'selected' : '' }}>
-                    {{ $kategoris->nama_kategori }}
-                </option>
-            @endforeach
-        </select>
+        <form action="{{ route('katalogBuku') }}" method="GET" class="flex items-center">
+            <select
+                class="h-14 px-4 rounded-2xl border border-slate-300 dark:border-gray-600 shadow-lg focus:outline-none text-slate-700 dark:text-white dark:bg-gray-700"
+                aria-label="Filter Kategori" onchange="this.form.submit()" name="kategori">
+                <option value="">Semua Kategori</option>
+                @foreach ($kategori as $kategoris)
+                    <option value="{{ $kategoris->id }}" {{ request('kategori') == $kategoris->id ? 'selected' : '' }}>
+                        {{ $kategoris->nama_kategori }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
     </div>
 
     <!-- Buku Terpopuler -->
@@ -141,16 +143,14 @@
             fetch(`/books/detail/${bookId}`)
                 .then(response => response.json())
                 .then(data => {
-                    // Isi modal dengan data dari API
                     document.getElementById('modalTitle').innerText = data.judul;
                     document.getElementById('modalContent').innerHTML = `
-                        <img src="${data.cover}" alt="Cover ${data.judul}" class="w-full h-72 object-cover rounded-xl mb-4">
-                        <p><strong>Penulis:</strong> ${data.penulis}</p>
-                        <p><strong>Penerbit:</strong> ${data.penerbit}</p>
-                        <p><strong>Kategori:</strong> ${data.nama_kategori}</p>
-                        <p><strong>Deskripsi:</strong> ${data.deskripsi}</p>
-                    `;
-                    // Tampilkan modal
+                <img src="${data.cover}" alt="Cover ${data.judul}" class="w-full h-72 object-cover rounded-xl mb-4">
+                <p><strong>Penulis:</strong> ${data.penulis}</p>
+                <p><strong>Penerbit:</strong> ${data.penerbit}</p>
+                <p><strong>Kategori:</strong> ${data.nama_kategori}</p>
+                <p><strong>Deskripsi:</strong> ${data.deskripsi}</p>
+            `;
                     document.getElementById('modalDetail').classList.remove('hidden');
                 })
                 .catch(error => {
@@ -158,12 +158,10 @@
                 });
         }
 
-        // Menutup Modal
         function closeModal() {
             document.getElementById('modalDetail').classList.add('hidden');
         }
 
-        // Menutup Modal dengan Klik di Luar Konten
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('modalDetail');
             if (event.target === modal) {

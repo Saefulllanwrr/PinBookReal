@@ -31,6 +31,11 @@ class BooksResource extends Resource
     {
         return $form
             ->schema([
+                TextInput::make('isbn')
+                    ->type('number')
+                    ->label('ISBN')
+                    ->required(),
+
                 TextInput::make('judul')
                     ->label('Judul Buku')
                     ->required(),
@@ -89,6 +94,7 @@ class BooksResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('isbn')->label('ISBN')->sortable()->searchable(),
                 TextColumn::make('judul')->label('Judul Buku')->sortable()->searchable(),
                 TextColumn::make('penulis')->label('Penulis')->sortable()->searchable(),
                 TextColumn::make('penerbit')->label('Penerbit')->sortable()->searchable(),

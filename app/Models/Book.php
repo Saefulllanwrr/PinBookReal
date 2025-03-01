@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Book extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'books';
 
     protected $fillable = [
+        'isbn',
         'judul',
         'penerbit',
         'penulis',
@@ -37,5 +39,10 @@ class Book extends Model
     public function loans()
     {
         return $this->hasMany(Peminjaman::class, 'buku_id'); // Tetap gunakan 'buku_id'
+    }
+
+    public function favoritedBy()
+    {
+        return $this->hasMany(Favorite::class);
     }
 }

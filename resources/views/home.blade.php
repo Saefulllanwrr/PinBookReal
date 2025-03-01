@@ -77,8 +77,7 @@
             <!-- Daftar Buku -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 @foreach ($books as $book)
-                    <div
-                        class="bg-white dark:bg-gray-700 rounded-3xl overflow-hidden hover:shadow-sm duration-300">
+                    <div class="bg-white dark:bg-gray-700 rounded-3xl overflow-hidden hover:shadow-sm duration-300">
                         <!-- Bagian yang membuka modal saat diklik -->
                         <div onclick="openModal({{ $book->id }})" class="cursor-pointer">
                             <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
@@ -159,7 +158,7 @@
             <div class="mt-12 text-center" data-aos="fade-up" data-aos-delay="400">
                 <h3 class="font-poppins font-bold text-[24px] text-[#0B192C] mb-4">Atau hubungi kami melalui:</h3>
                 <div class="flex justify-center items-center gap-6">
-                    <a href="mailto:info@pinbook.com" class="text-[#FF6500] hover:text-[#E55A00]">
+                    <a href="mailto:saefulllanwrrr@gmail.com" class="text-[#FF6500] hover:text-[#E55A00]">
                         <i class="fas fa-envelope text-3xl"></i>
                     </a>
                     <a href="https://wa.me/62085720800889" class="text-[#FF6500] hover:text-[#E55A00]">

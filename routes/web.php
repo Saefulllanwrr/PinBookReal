@@ -8,6 +8,7 @@ use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PinjamBukuController;
@@ -41,12 +42,19 @@ Route::middleware(['auth'])->group(function () {
 
 // View katalog
 Route::get('/katalog-buku', [BookController::class, 'index'])->name('katalogBuku');
-Route::get('/books', [BookController::class, 'index'])->name('books.katalogBuku');
 Route::get('/books/detail/{id}', [BookController::class, 'getBookDetail'])->name('books.detail');
 Route::get('/katalog', [BookController::class, 'index'])->name('books.katalogBuku');
 
 // View detail peminjaman
 Route::get('/peminjaman/{id}', [BookController::class, 'showPeminjaman'])->name('peminjaman');
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/{bookId}', [FavoriteController::class, 'store'])->name('favorites.store');
+    Route::delete('/favorites/{bookId}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+});
+
 
 // Grup route yang memerlukan autentikasi
 Route::middleware(['auth'])->group(function () {

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->integer('stok');
+            $table->string('isbn')->unique()->after('id'); // Menambahkan kolom ISBN setelah id
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('books', function (Blueprint $table) {
-            //
+            $table->dropColumn('isbn'); // Menghapus kolom ISBN saat rollback
         });
     }
 };

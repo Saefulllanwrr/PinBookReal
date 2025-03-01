@@ -15,27 +15,27 @@ class BookController extends Controller
         $kategori = Kategori::all();
         $booksQuery = Book::with('kategori');
 
-        if ($request->filled('kategori')) {
-            $booksQuery->where('kategori_id', $request->kategori);
-        }
+        // Filter berdasarkan kategori
+        $booksQuery->when($request->filled('kategori'), function ($query) use ($request) {
+            $query->where('kategori_id', $request->kategori);
+        });
 
-        if ($request->filled('query')) {
-            $query = $request->query('query');
-            $booksQuery->where(function ($q) use ($query) {
-                $q->where('judul', 'like', '%' . $query . '%')
-                    ->orWhere('penulis', 'like', '%' . $query . '%')
-                    ->orWhere('penerbit', 'like', '%' . $query . '%');
+        // Pencarian berdasarkan judul, penulis, atau penerbit
+        $booksQuery->when($request->filled('query'), function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->query . '%')
+                    ->orWhere('penulis', 'like', '%' . $request->query . '%')
+                    ->orWhere('penerbit', 'like', '%' . $request->query . '%');
             });
-        }
+        });
 
         $books = $booksQuery->paginate(8);
+
         // Ambil buku yang paling sering dipinjam (favorit)
-        $favoriteBooks = Book::withCount('loans')
-            ->whereHas('loans') // Hanya buku yang memiliki peminjaman
-            ->orderByDesc('loans_count')
+        $favoriteBooks = Book::where('borrow_count', '>', 0)
+            ->orderByDesc('borrow_count')
             ->take(5)
             ->get();
-
 
         return view('books.katalogBuku', compact('kategori', 'books', 'favoriteBooks'));
     }
@@ -43,23 +43,34 @@ class BookController extends Controller
     // Menampilkan detail buku dalam format JSON
     public function getBookDetail($id)
     {
-        $book = Book::with('kategori')
-            ->select('id', 'judul', 'penulis', 'penerbit', 'deskripsi', 'cover', 'kategori_id')
-            ->findOrFail($id);
+        try {
+            $book = Book::with('kategori')
+                ->select('id', 'judul', 'penulis', 'penerbit', 'deskripsi', 'cover', 'kategori_id')
+                ->findOrFail($id);
 
-        return response()->json([
-            'judul' => $book->judul,
-            'penulis' => $book->penulis,
-            'penerbit' => $book->penerbit,
-            'nama_kategori' => $book->kategori->nama_kategori ?? 'Tidak ada kategori',
-            'deskripsi' => $book->deskripsi,
-            'cover' => asset('storage/' . $book->cover)
-        ]);
+            return response()->json([
+                'judul' => $book->judul,
+                'penulis' => $book->penulis,
+                'penerbit' => $book->penerbit,
+                'nama_kategori' => $book->kategori->nama_kategori ?? 'Tidak ada kategori',
+                'deskripsi' => $book->deskripsi,
+                'cover' => asset('storage/' . $book->cover)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Buku tidak ditemukan'
+            ], 404);
+        }
     }
 
     // Menampilkan halaman peminjaman buku
     public function showPeminjaman($book_id)
     {
+        // Pastikan pengguna sudah login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
+        }
+
         $book = Book::findOrFail($book_id);
         return view('books.peminjaman', compact('book'));
     }
@@ -67,7 +78,7 @@ class BookController extends Controller
     // Menampilkan halaman home dengan buku terbaru
     public function showHome()
     {
-        $books = Book::latest()->limit(4)->get();
+        $books = Book::latest('created_at')->limit(4)->get();
         return view('home', compact('books'));
     }
 }
