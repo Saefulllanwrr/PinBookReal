@@ -1,18 +1,15 @@
-<!DOCTYPE html>
-<html lang="id">
+@component('mail::message')
+    # Pesan Baru dari Form Kontak
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesan Baru dari Form Kontak</title>
-</head>
+    Anda menerima pesan baru dari form kontak PinBook. Berikut detailnya:
 
-<body>
-    <h1>Pesan Baru dari Form Kontak PinBook</h1>
-    <p><strong>Nama:</strong> {{ $data['name'] }}</p>
-    <p><strong>Email:</strong> {{ $data['email'] }}</p>
-    <p><strong>Pesan:</strong></p>
-    <p>{{ $data['message'] }}</p>
-</body>
+    @component('mail::panel')
+        **Nama:** {{ $data['name'] }}
+        **Email:** {{ $data['email'] }}
+        **Pesan:**
+        {{ $data['message'] }}
+    @endcomponent
 
-</html>
+    Terima kasih,
+    {{ config('app.name') }}
+@endcomponent

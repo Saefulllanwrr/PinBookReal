@@ -16,13 +16,11 @@
 
     <!-- Notifikasi -->
     @if (session('success'))
-        <div
-            class="fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center justify-between">
-            <span>{{ session('success') }}</span>
-            <button onclick="this.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+        <script>
+            window.onload = function() {
+                toastr.success("{{ session('success') }}");
+            }
+        </script>
     @endif
     <!-- Header -->
     <x-navbar />

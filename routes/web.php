@@ -69,7 +69,6 @@ Route::middleware(['auth'])->group(function () {
 // Donation routes
 Route::post('/donate/process', [DonationController::class, 'process'])->name('donate.process')->middleware('auth');
 
-Route::get('/kontak', [ContactController::class, 'show'])->name('contact.show');
 
-// Route untuk menangani pengiriman form kontak
-Route::post('/kontak', [ContactController::class, 'store'])->name('contact.submit');
+Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.show');
+Route::post('/contact', [ContactController::class, 'submitContactForm'])->name('contact.submit');
