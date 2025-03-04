@@ -13,7 +13,7 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-gray-50 font-poppins">
+<body class="bg-slate-50 font-poppins">
     <!-- Navbar -->
     <x-navbar class="fixed top-0 left-0 w-full bg-white shadow-md z-50"></x-navbar>
 
@@ -22,7 +22,7 @@
 
     <div class="container mx-auto mt-8 px-4">
         <div class="bg-white shadow-lg rounded-xl p-8">
-            <h2 class="text-3xl font-bold mb-8 text-gray-800">Buku yang Sedang Dipinjam</h2>
+
 
             <!-- Notifikasi Pesan -->
             @if (session('status'))
@@ -36,7 +36,7 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white rounded-lg shadow-sm">
                     <thead>
-                        <tr class="bg-gray-100 text-gray-600 text-left text-sm font-semibold">
+                        <tr class="bg-slate-100 text-slate-600 text-left text-sm font-semibold">
                             <th class="py-4 px-6">Judul Buku</th>
                             <th class="py-4 px-6">Tanggal Pinjam</th>
                             <th class="py-4 px-6 text-center">Aksi</th>
@@ -44,7 +44,7 @@
                     </thead>
                     <tbody>
                         @forelse ($peminjaman as $pinjam)
-                            <tr class="border-b border-gray-200 hover:bg-gray-50 transition duration-200">
+                            <tr class="border-b border-slate-200 hover:bg-slate-50 transition duration-200">
                                 <td class="py-5 px-6">{{ $pinjam->book->judul }}</td>
                                 <td class="py-5 px-6">{{ $pinjam->tanggal_pinjam }}</td>
                                 <td class="py-5 px-6 text-center space-x-4">
@@ -56,7 +56,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="py-5 px-6 text-center text-gray-500">
+                                <td colspan="3" class="py-5 px-6 text-center text-slate-500">
                                     Tidak ada buku yang sedang dipinjam
                                 </td>
                             </tr>

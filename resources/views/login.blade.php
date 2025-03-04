@@ -8,15 +8,11 @@
     <title>PinBook - Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @vite('resources/css/app.css')
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
+
 </head>
 
-<body class="bg-gradient-to-r from-slate-900 to-[#0B192C] flex items-center justify-center min-h-screen p-4">
+<body
+    class=" font-poppins  bg-gradient-to-r from-slate-900 to-[#0B192C] flex items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-md bg-[#0B192C] rounded-2xl shadow-2xl p-8">
         <!-- Header -->
         <div class="text-center">
@@ -34,25 +30,26 @@
 
             <!-- Username Input -->
             <div class="mb-4">
-                <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Username :</label>
-                <input type="text" id="username" name="username" placeholder="Username" required
-                    class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-[#FF6500] transition duration-200">
+                <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Email atau username</label>
+                <input type="text" id="username" name="username" placeholder="Masukan email atau username..."
+                    required
+                    class="w-full bg-[#0B192C] border border-slate-400 text-slate-500 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-[#FF6500] transition duration-200">
             </div>
 
             <!-- Password Input -->
             <div class="mb-4">
-                <label for="password" class="block text-sm font-medium text-slate-300 mb-2">Password :</label>
-                <input type="password" id="password" name="password" placeholder="Password" required
-                    class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-[#FF6500] transition duration-200">
+                <label for="password" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
+                <input type="password" id="password" name="password" placeholder="Masukan password anda..." required
+                    class="w-full bg-[#0B192C] border border-slate-400 text-slate-500 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-[#FF6500] transition duration-200">
             </div>
 
             <!-- Remember Me & Buat Akun -->
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center">
                     <input id="remember" type="checkbox" name="remember"
-                        class="w-4 h-4 text-[#FF6500] bg-slate-800 border-slate-700 rounded focus:ring-[#FF6500]">
+                        class="w-4 h-4 text-[#FF6500] bg-slate-800 border-slate-700 rounded">
                     <label for="remember"
-                        class="ml-2 text-sm text-[#FF6500] hover:text-slate-300 transition duration-200">Ingat
+                        class="ml-2 text-sm text-slate-400 hover:text-slate-300 transition duration-200">Ingat
                         Saya</label>
                 </div>
 
