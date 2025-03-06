@@ -47,32 +47,39 @@
     <!-- Buku Terpopuler -->
     <div class="container mx-auto px-4 mt-8">
         <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Buku Terpopuler</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            @foreach ($favoriteBooks as $book)
-                <div
-                    class="bg-white dark:bg-slate-700 shadow-2xl rounded-3xl overflow-hidden hover:shadow-3xl duration-300">
-                    <div onclick="openModal({{ $book->id }})" class="cursor-pointer">
-                        <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
-                            class="w-full h-72 object-cover rounded-t-3xl">
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">{{ $book->judul }}
-                            </h3>
-                            <p class="text-slate-600 dark:text-slate-300 text-sm mt-2 flex items-center">
-                                <i class="fas fa-user-edit mr-2"></i> Penulis: {{ $book->penulis }}
-                            </p>
-                            <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
-                                <i class="fas fa-building mr-2"></i> Penerbit: {{ $book->penerbit }}
-                            </p>
-                            <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
-                                <i class="fas fa-tag mr-2"></i> Kategori: {{ $book->kategori->nama_kategori }}
-                            </p>
-                            <p class="text-slate-600 dark:text-slate-300 text-sm"> {{ $book->borrow_count }}
-                                kali di baca</p>
+        @if ($books->isEmpty())
+            <div class="text-center text-slate-500 dark:text-slate-400 text-sm font-medium py-12">
+                <i class="fas fa-book-open mr-2"></i> Belum ada buku populer.
+            </div>
+        @else
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                @foreach ($favoriteBooks as $book)
+                    <div
+                        class="bg-white dark:bg-slate-700 shadow-2xl rounded-3xl overflow-hidden hover:shadow-3xl duration-300">
+                        <div onclick="openModal({{ $book->id }})" class="cursor-pointer">
+                            <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
+                                class="w-full h-72 object-cover rounded-t-3xl">
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">
+                                    {{ $book->judul }}
+                                </h3>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm mt-2 flex items-center">
+                                    <i class="fas fa-user-edit mr-2"></i> Penulis: {{ $book->penulis }}
+                                </p>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
+                                    <i class="fas fa-building mr-2"></i> Penerbit: {{ $book->penerbit }}
+                                </p>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
+                                    <i class="fas fa-tag mr-2"></i> Kategori: {{ $book->kategori->nama_kategori }}
+                                </p>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm"> {{ $book->borrow_count }}
+                                    kali di baca</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 
     <!-- Daftar Buku -->

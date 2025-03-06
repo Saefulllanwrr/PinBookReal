@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
@@ -14,14 +15,7 @@
 
 <body>
 
-    <!-- Notifikasi -->
-    @if (session('success'))
-        <script>
-            window.onload = function() {
-                toastr.success("{{ session('success') }}");
-            }
-        </script>
-    @endif
+
     <!-- Header -->
     <x-navbar />
 
@@ -181,33 +175,30 @@
         });
     </script>
 
-    <!-- Script untuk menghilangkan notifikasi otomatis -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Lucide Icons -->
     <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault(); // Mencegah perilaku default
-                const targetId = this.getAttribute('href').substring(1); // Ambil ID target
-                const targetElement = document.getElementById(targetId); // Dapatkan elemen target
+        lucide.createIcons();
+    </script>
 
-                if (targetElement) {
-                    // Scroll ke elemen target dengan efek smooth
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+    <!-- Toastr Notification -->
+    <script>
+        $(document).ready(function() {
+            @if (session('error'))
+                toastr.error({!! json_encode(session('error')) !!});
+            @endif
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const notification = document.querySelector('.fixed.bg-green-500');
-            if (notification) {
-                setTimeout(() => {
-                    notification.remove();
-                }, 5000); // 5000 milidetik = 5 detik
-            }
+            @if (session('success'))
+                toastr.success({!! json_encode(session('success')) !!});
+            @endif
         });
     </script>
+
 </body>
 
 </html>

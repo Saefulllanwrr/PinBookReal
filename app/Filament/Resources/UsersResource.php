@@ -71,8 +71,6 @@ class UsersResource extends Resource
                                     ->send();
                             }),
                     ]),
-
-
             ]);
     }
 
@@ -85,6 +83,14 @@ class UsersResource extends Resource
                 TextColumn::make('email')->label('Email'),
                 TextColumn::make('role')->label('Role'),
                 TextColumn::make('no_telepon')->label('No Telepon'),
+                TextColumn::make('is_blocked')
+                    ->label('Status')
+                    ->formatStateUsing(fn($state) => $state ? 'Diblokir' : 'Aktif')
+                    ->badge()
+                    ->colors([
+                        'danger' => fn($state) => $state,
+                        'success' => fn($state) => !$state,
+                    ]),
             ])
             ->filters([
                 SelectFilter::make('role')
@@ -95,24 +101,54 @@ class UsersResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+
+                // Aksi Blokir
+                Tables\Actions\Action::make('block')
+                    ->label('Blokir')
+                    ->icon('heroicon-o-lock-closed')
+                    ->action(function (User $record) {
+                        $record->update(['is_blocked' => true]);
+
+                        Notification::make()
+                            ->title('Akun Diblokir')
+                            ->body("Akun {$record->name} telah diblokir.")
+                            ->danger()
+                            ->send();
+                    })
+                    ->hidden(fn(User $record) => $record->is_blocked)
+                    ->requiresConfirmation(),
+
+                // Aksi Unblokir
+                Tables\Actions\Action::make('unblock')
+                    ->label('Buka Blokir')
+                    ->icon('heroicon-o-lock-open')
+                    ->action(function (User $record) {
+                        $record->update(['is_blocked' => false]);
+
+                        Notification::make()
+                            ->title('Akun Dibuka Blokir')
+                            ->body("Akun {$record->name} telah dibuka blokir.")
+                            ->success()
+                            ->send();
+                    })
+                    ->hidden(fn(User $record) => !$record->is_blocked)
+                    ->requiresConfirmation(),
+
+                // Aksi Reset Password
                 Tables\Actions\Action::make('resetPassword')
                     ->label('Reset Password')
                     ->icon('heroicon-o-key')
                     ->action(function (User $record) {
-                        $newPassword = Str::random(8); // Generate password baru
-                        $record->update([
-                            'password' => bcrypt($newPassword), // Simpan password yang sudah di-hash
-                        ]);
+                        $password = Str::random(8); // Generate password random
+                        $record->update(['password' => bcrypt($password)]);
 
-                        // Tampilkan notifikasi ke admin
                         Notification::make()
-                            ->title('Password Reset Berhasil')
-                            ->body("Password baru untuk {$record->name}: $newPassword")
+                            ->title('Password Reset')
+                            ->body("Password baru untuk {$record->name} adalah: $password")
                             ->success()
                             ->send();
                     })
-                    ->requiresConfirmation(), // Konfirmasi sebelum reset
+                    ->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -120,7 +156,6 @@ class UsersResource extends Resource
                 ]),
             ]);
     }
-
 
     public static function getRelations(): array
     {

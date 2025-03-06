@@ -58,6 +58,7 @@ class User extends Authenticatable implements FilamentUser
         'profile',
         'role',
         'remember_token',
+        'is_blocked',
     ];
 
     /**

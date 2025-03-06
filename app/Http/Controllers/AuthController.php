@@ -29,6 +29,20 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        // Cek apakah pengguna ada di database
+        $user = User::where('username', $credentials['username'])
+            ->orWhere('email', $credentials['username'])
+            ->first();
+
+        if (!$user) {
+            return back()->with('error', 'Username atau Password salah');
+        }
+
+        // Cek apakah akun diblokir
+        if ($user->is_blocked) {
+            return back()->with('error', 'Akun Anda telah diblokir. Silakan hubungi admin.');
+        }
+
         // Cek apakah "Remember Me" dicentang
         $remember = $request->has('remember');
 
@@ -44,6 +58,7 @@ class AuthController extends Controller
         return back()->with('error', 'Username atau Password salah');
     }
 
+
     // Logout pengguna
     public function logout(Request $request)
     {
@@ -54,6 +69,6 @@ class AuthController extends Controller
 
         // Hapus cookie "Remember Me"
         $cookie = Cookie::forget(Auth::getRecallerName());
-        return redirect()->route('home')->with('success', 'Berhasil Logout!')->withCookie($cookie);
+        return redirect()->route('login')->with('success', 'Berhasil Logout!')->withCookie($cookie);
     }
 }

@@ -2,20 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
 use App\Models\Donation;
-use Filament\Forms\Form;
+
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
+
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
+
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
+
 use App\Filament\Resources\DonationResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\DonationResource\RelationManagers;
+
 
 class DonationResource extends Resource
 {

@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateUsers extends CreateRecord
 {
     protected static string $resource = UsersResource::class;
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'Akun pengguna berhasil dibuat';
+    }
 }

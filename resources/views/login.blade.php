@@ -1,18 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>PinBook - Login</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @vite('resources/css/app.css')
 
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind CSS -->
+    @vite('resources/css/app.css')
 </head>
 
 <body
-    class=" font-poppins  bg-gradient-to-r from-slate-900 to-[#0B192C] flex items-center justify-center min-h-screen p-4">
+    class="font-poppins bg-gradient-to-r from-slate-900 to-[#0B192C] flex items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-md bg-[#0B192C] rounded-2xl shadow-2xl p-8">
         <!-- Header -->
         <div class="text-center">
@@ -30,50 +38,67 @@
 
             <!-- Username Input -->
             <div class="mb-4">
-                <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Email atau username</label>
+                <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Email atau Username</label>
                 <input type="text" id="username" name="username" placeholder="Masukan email atau username..."
                     required
-                    class="w-full bg-[#0B192C] border border-slate-400 text-slate-500 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-[#FF6500] transition duration-200">
+                    class="w-full bg-[#0B192C] border border-slate-400 text-slate-500 text-sm rounded-lg p-2.5
+                    focus:outline-none focus:ring-2 focus:ring-[#FF6500] focus:text-white transition duration-200">
             </div>
 
             <!-- Password Input -->
             <div class="mb-4">
                 <label for="password" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
                 <input type="password" id="password" name="password" placeholder="Masukan password anda..." required
-                    class="w-full bg-[#0B192C] border border-slate-400 text-slate-500 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-[#FF6500] transition duration-200">
+                    class="w-full bg-[#0B192C] border border-slate-400 text-slate-500 text-sm rounded-lg p-2.5
+                    focus:outline-none focus:ring-2 focus:ring-[#FF6500] focus:text-white transition duration-200">
             </div>
 
-            <!-- Remember Me & Buat Akun -->
+            <!-- Remember Me -->
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center">
                     <input id="remember" type="checkbox" name="remember"
-                        class="w-4 h-4 text-[#FF6500] bg-slate-800 border-slate-700 rounded">
+                        class="w-4 h-4 text-[#FF6500] bg-slate-800 border-slate-700 rounded"
+                        {{ old('remember') ? 'checked' : '' }}>
                     <label for="remember"
-                        class="ml-2 text-sm text-slate-400 hover:text-slate-300 transition duration-200">Ingat
-                        Saya</label>
+                        class="ml-2 text-sm text-slate-400 hover:text-slate-300 transition duration-200">
+                        Ingat Saya
+                    </label>
                 </div>
-
             </div>
 
             <!-- Submit Button -->
             <button type="submit"
-                class="w-full bg-[#FF6500] text-white font-medium rounded-lg text-sm py-2.5 text-center hover:bg-[#E55A00] transition duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6500] focus:ring-offset-2">
+                class="w-full bg-[#FF6500] text-white font-medium rounded-lg text-sm py-2.5 text-center
+                hover:bg-[#E55A00] active:scale-95 transition duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6500] focus:ring-offset-2">
                 Login
             </button>
         </form>
-
-        <!-- SweetAlert untuk Menampilkan Pesan Error -->
-        @if (session('error'))
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: '{{ session('error') }}',
-                    confirmButtonColor: '#FF6500',
-                });
-            </script>
-        @endif
     </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- Toastr Notification -->
+    <script>
+        $(document).ready(function() {
+            @if (session('error'))
+                toastr.error({!! json_encode(session('error')) !!});
+            @endif
+
+            @if (session('success'))
+                toastr.success({!! json_encode(session('success')) !!});
+            @endif
+        });
+    </script>
+
 </body>
 
 </html>
