@@ -29,9 +29,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->authGuard('admin') // Pastikan guard admin sudah ada di config/auth.php
+            ->passwordReset()
+            ->profile()
+            ->registration()
+            ->emailVerification()
+            ->brandName('PinBook')
+            ->authGuard('admin')
             ->colors([
-                'primary' => Color::Lime,
+                'primary' => Color::Indigo
+
             ])
 
 

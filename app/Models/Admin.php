@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\Notifiable;
 
 class Admin extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, MustVerifyEmail;
 
-    protected $fillable = ['name', 'email', 'password', 'role']; // Tambahkan role
+    protected $fillable = ['name', 'email', 'password', 'role', 'remember_token'];
 
     protected $attributes = [
         'role' => 'admin', // Default role admin
@@ -20,11 +20,6 @@ class Admin extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        return $this->role === 'admin'; // Hanya admin yang bisa akses Filament
-    }
-
-    public function notifications() // ✅ Tambahkan ini
-    {
-        return $this->morphMany(DatabaseNotification::class, 'notifiable');
+        return true;
     }
 }

@@ -44,6 +44,8 @@ class KategoriResource extends Resource
                     ->label('Kategori'),
                 TextColumn::make('deskripsi'),
             ])
+            ->emptyStateHeading('Tidak ada data kategori')
+            ->emptyStateDescription('Mulai dengan menambahkan data kategori baru')
             ->filters([
                 //
             ])

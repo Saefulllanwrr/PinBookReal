@@ -9,6 +9,7 @@ use App\Models\Kategori;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
@@ -107,6 +108,11 @@ class BooksResource extends Resource
                     ->width(100)
                     ->height(100),
             ])
+
+            ->emptyStateHeading('Tidak ada data buku')
+            ->emptyStateDescription('Mulai dengan menambahkan data buku baru')
+
+
             ->filters([
                 SelectFilter::make('kategori_id')
                     ->label('Kategori')

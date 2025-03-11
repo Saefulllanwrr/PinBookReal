@@ -2,24 +2,28 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
+
+use App\Models\User;
+use Filament\Tables;
+use App\Models\Admin;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Notifications\Notification;
-use App\Models\User;
-use App\Filament\Resources\UsersResource\Pages;
+
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Components\Actions\Action;
+use App\Filament\Resources\UsersResource\Pages;
+
 
 class UsersResource extends Resource
+
 {
+
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -38,14 +42,14 @@ class UsersResource extends Resource
                 TextInput::make('username')
                     ->label('Username')
                     ->required()
-                    ->unique(User::class, 'username')
+                    ->unique(User::class, 'username', ignoreRecord: true) // Tambahkan ignoreRecord untuk mengabaikan record saat edit
                     ->maxLength(255),
 
                 TextInput::make('email')
                     ->label('Email')
                     ->email()
                     ->required()
-                    ->unique(User::class, 'email')
+                    ->unique(User::class, 'email', ignoreRecord: true) // Tambahkan ignoreRecord untuk mengabaikan record saat edit
                     ->maxLength(255),
 
                 TextInput::make('no_telepon')
@@ -56,6 +60,7 @@ class UsersResource extends Resource
                     ->label('Password')
                     ->password()
                     ->required()
+                    ->hiddenOn('edit') // Sembunyikan field password saat mode edit
                     ->suffixActions([
                         Action::make('generatePassword')
                             ->icon('heroicon-o-arrow-path') // Ikon refresh
@@ -78,11 +83,15 @@ class UsersResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('Nama'),
-                TextColumn::make('username')->label('Username'),
-                TextColumn::make('email')->label('Email'),
-                TextColumn::make('role')->label('Role'),
-                TextColumn::make('no_telepon')->label('No Telepon'),
+                TextColumn::make('name')
+                    ->label('Nama')
+                    ->searchable(),
+                TextColumn::make('username')->label('Username')
+                    ->searchable(),
+                TextColumn::make('email')->label('Email')
+                    ->searchable(),
+                TextColumn::make('no_telepon')->label('No Telepon')
+                    ->searchable(),
                 TextColumn::make('is_blocked')
                     ->label('Status')
                     ->formatStateUsing(fn($state) => $state ? 'Diblokir' : 'Aktif')
@@ -93,11 +102,15 @@ class UsersResource extends Resource
                     ]),
             ])
             ->filters([
-                SelectFilter::make('role')
+                // Filter berdasarkan status (Aktif atau Diblokir)
+                SelectFilter::make('is_blocked')
+                    ->label('Status')
                     ->options([
-                        'admin' => 'Admin',
-                        'user' => 'User',
-                    ]),
+                        '0' => 'Aktif', // Nilai 0 untuk pengguna aktif
+                        '1' => 'Diblokir', // Nilai 1 untuk pengguna diblokir
+                    ])
+                // Secara default, tampilkan pengguna aktif
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -109,6 +122,7 @@ class UsersResource extends Resource
                     ->action(function (User $record) {
                         $record->update(['is_blocked' => true]);
 
+                        // Kirim notifikasi ke semua admin
                         Notification::make()
                             ->title('Akun Diblokir')
                             ->body("Akun {$record->name} telah diblokir.")
