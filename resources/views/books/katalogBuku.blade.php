@@ -73,7 +73,7 @@
                                     <i class="fas fa-tag mr-2"></i> Kategori: {{ $book->kategori->nama_kategori }}
                                 </p>
                                 <p class="text-slate-600 dark:text-slate-300 text-sm"> {{ $book->borrow_count }}
-                                    kali di baca</p>
+                                    kali di pinjam</p>
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                                     <i class="fas fa-tag mr-2"></i> Kategori: {{ $book->kategori->nama_kategori }}
                                 </p>
                                 <p class="text-slate-600 dark:text-slate-300 text-sm">
-                                    {{ $book->borrow_count }} kali di baca</p>
+                                    {{ $book->borrow_count }} kali di pinjam</p>
                             </div>
                         </div>
                         <div class="p-5">

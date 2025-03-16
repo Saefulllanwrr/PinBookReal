@@ -53,7 +53,7 @@ class PinjamBukuController extends Controller
                     'status' => 'menunggu',
                 ]);
 
-                // **Catatan:** Stok tidak berkurang sampai peminjaman disetujui oleh admin.
+                $book->increaseBorrowCount();
             });
 
             return redirect()->route('peminjaman.index')->with('success', 'Permintaan peminjaman berhasil diajukan, menunggu persetujuan admin.');

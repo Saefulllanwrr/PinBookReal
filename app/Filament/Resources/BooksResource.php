@@ -15,17 +15,20 @@ use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
+use pxlrbt\FilamentExcel\Columns\Column;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\BooksResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class BooksResource extends Resource
 {
     protected static ?string $model = Book::class;
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $navigationLabel = 'Buku';
-
     protected static ?string $navigationGroup = 'Manajemen Buku';
 
     public static function form(Form $form): Form
@@ -33,10 +36,10 @@ class BooksResource extends Resource
         return $form
             ->schema([
                 TextInput::make('isbn')
-                    ->type('number')
                     ->label('ISBN')
-                    ->required()
-                    ->rule('digits:13'),
+                    ->numeric()
+                    ->length(13)
+                    ->required(),
 
                 TextInput::make('judul')
                     ->label('Judul Buku')
@@ -60,7 +63,7 @@ class BooksResource extends Resource
 
                 FileUpload::make('cover')
                     ->disk('public')
-                    ->directory('cover')
+                    ->directory('covers')
                     ->visibility('public')
                     ->required(),
 
@@ -104,29 +107,27 @@ class BooksResource extends Resource
                 TextColumn::make('kategori.nama_kategori')->label('Kategori')->sortable()->searchable(),
                 TextColumn::make('stok')->label('Stok')->sortable(),
                 TextColumn::make('status')->label('Status')->sortable(),
+
                 ImageColumn::make('cover')
                     ->disk('public')
                     ->width(100)
                     ->height(100),
             ])
-
             ->emptyStateHeading('Tidak ada data buku')
             ->emptyStateDescription('Mulai dengan menambahkan data buku baru')
-
-
             ->filters([
                 SelectFilter::make('kategori_id')
                     ->label('Kategori')
                     ->relationship('kategori', 'nama_kategori')
                     ->searchable()
                     ->preload(),
-
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -145,5 +146,10 @@ class BooksResource extends Resource
             'create' => Pages\CreateBooks::route('/create'),
             'edit' => Pages\EditBooks::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return 'Manajemen Buku';
     }
 }

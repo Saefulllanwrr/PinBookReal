@@ -198,4 +198,9 @@ class PeminjamanResource extends Resource
             'index' => Pages\ListPeminjamen::route('/'),
         ];
     }
+
+    public static function getPluralLabel(): ?string
+    {
+        return 'Laporan Peminjaman';
+    }
 }

@@ -24,10 +24,36 @@
         <!-- Menambahkan margin-top agar card tidak tertutup navbar -->
 
         <!-- Kartu Buku -->
-        <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96 transition-transform duration-300 hover:scale-105">
+        <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96">
             <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}"
                 class="rounded-lg mb-4 w-full h-64 object-cover shadow-md">
             <h2 class="text-2xl font-bold text-center text-gray-800">{{ $book->judul }}</h2>
+
+            @if (Auth::check())
+                <div class="mt-4">
+                    <label class="block text-gray-700 font-medium">Berikan Rating:</label>
+                    <div id="star-rating" class="flex space-x-2 text-3xl cursor-pointer text-gray-400">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <span data-value="{{ $i }}" class="star">☆</span>
+                        @endfor
+                    </div>
+                    <form id="rating-form" action="{{ url('/books/' . $book->id . '/rate') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="rating" id="rating-value">
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg mt-2 hidden">
+                            Kirim Rating
+                        </button>
+                    </form>
+                </div>
+
+                @if (session('success'))
+                    <p class="text-green-600">{{ session('success') }}</p>
+                @endif
+
+                <h3 class="mt-4">Rata-rata Rating: <span id="average-rating">0</span> / 5</h3>
+            @endif
+
+
         </div>
 
         <!-- Konfirmasi Peminjaman -->
@@ -101,6 +127,56 @@
             @endif
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const stars = document.querySelectorAll("#star-rating .star");
+            const ratingValue = document.getElementById("rating-value");
+            const ratingForm = document.getElementById("rating-form");
+            const submitButton = ratingForm.querySelector("button");
+
+            stars.forEach(star => {
+                star.addEventListener("mouseover", function() {
+                    const value = this.getAttribute("data-value");
+                    highlightStars(value);
+                });
+
+                star.addEventListener("click", function() {
+                    const value = this.getAttribute("data-value");
+                    ratingValue.value = value;
+                    submitButton.classList.remove("hidden");
+                });
+
+                star.addEventListener("mouseleave", function() {
+                    if (!ratingValue.value) {
+                        resetStars();
+                    } else {
+                        highlightStars(ratingValue.value);
+                    }
+                });
+            });
+
+            function highlightStars(value) {
+                stars.forEach(star => {
+                    star.innerText = star.getAttribute("data-value") <= value ? "★" : "☆";
+                    star.classList.toggle("text-yellow-400", star.getAttribute("data-value") <= value);
+                });
+            }
+
+            function resetStars() {
+                stars.forEach(star => {
+                    star.innerText = "☆";
+                    star.classList.remove("text-yellow-400");
+                });
+            }
+
+            fetch("{{ url('/books/' . $book->id . '/rating') }}")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('average-rating').innerText = data.average_rating.toFixed(1);
+                });
+        });
+    </script>
+
 </body>
 
 </html>

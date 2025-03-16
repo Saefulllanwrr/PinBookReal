@@ -26,6 +26,11 @@ class Book extends Model
         'borrow_count',
     ];
 
+    public function increaseBorrowCount()
+    {
+        $this->increment('borrow_count');
+    }
+
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');

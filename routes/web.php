@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AvatarController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DonationController;
@@ -63,8 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
 });
 
-// Donation routes
+Route::post('/books/{book}/rate', [RatingController::class, 'store'])->middleware('auth');
+Route::get('/books/{book}/rating', [RatingController::class, 'getAverageRating']);
 
 
 Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'submitContactForm'])->name('contact.submit');
+

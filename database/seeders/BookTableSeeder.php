@@ -4,45 +4,82 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class BookTableSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // Data Dummy untuk Random
-        $judulBuku = [
-            'Belajar Laravel dari Dasar',
-            'Mastering PHP',
-            'JavaScript untuk Pemula',
-            'Framework CSS Terbaik',
-            'Panduan VueJS',
-            'React Native Expert',
-            'Database MySQL',
-            'Pemrograman Python',
-            'Belajar Golang',
-            'Flutter Mudah'
-        ];
-
-        $penerbit = ['Gramedia', 'Erlangga', 'Andi Publisher', 'Bentang Pustaka', 'Deepublish'];
-        $penulis = ['John Doe', 'Jane Smith', 'Ahmad Fauzi', 'Putri Lestari', 'Michael Anggara'];
-        $cover = ['cover1.jpg', 'cover2.jpg', 'cover3.jpg', 'cover4.jpg', 'cover5.jpg'];
-        $status = ['available', 'not available'];
-
-        for ($i = 1; $i <= 50; $i++) {
-            DB::table('books')->insert([
-                'judul' => $judulBuku[array_rand($judulBuku)] . ' - Seri ' . rand(1, 10),
-                'penerbit' => $penerbit[array_rand($penerbit)],
-                'penulis' => $penulis[array_rand($penulis)],
-                'diterbitkan' => Carbon::now()->subYears(rand(1, 10))->format('Y-m-d'),
-                'kategori_id' => rand(1, 5), // Sesuaikan dengan ID kategori yang ada di tabel kategori
-                'cover' => $cover[array_rand($cover)],
-                'deskripsi' => 'Buku ini menjelaskan tentang ' . Str::random(20),
-                'status' => $status[array_rand($status)],
+        DB::table('books')->insert([
+            [
+                'isbn' => '9781234567890',
+                'judul' => 'Belajar Laravel untuk Pemula',
+                'penerbit' => 'Gramedia',
+                'penulis' => 'Saeful Anwar',
+                'deskripsi' => 'Buku ini membahas tentang Laravel secara lengkap untuk pemula.',
+                'diterbitkan' => '2024-03-10',
+                'cover' => 'cover/laravel-book.jpg',
+                'kategori_id' => 1,
+                'stok' => 10,
+                'status' => 'available',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
-        }
+            ],
+            [
+                'isbn' => '9789876543210',
+                'judul' => 'Fundamental React.js',
+                'penerbit' => 'Elex Media',
+                'penulis' => 'Budi Santoso',
+                'deskripsi' => 'Panduan lengkap untuk memahami React.js dalam pengembangan web modern.',
+                'diterbitkan' => '2023-07-15',
+                'cover' => 'cover/react-book.jpg',
+                'kategori_id' => 2,
+                'stok' => 5,
+                'status' => 'available',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'isbn' => '9781111222333',
+                'judul' => 'Mastering PHP',
+                'penerbit' => 'Packt Publishing',
+                'penulis' => 'John Doe',
+                'deskripsi' => 'Buku ini membahas PHP dari dasar hingga tingkat lanjut.',
+                'diterbitkan' => '2022-09-20',
+                'cover' => 'cover/php-book.jpg',
+                'kategori_id' => 1,
+                'stok' => 3,
+                'status' => 'available',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'isbn' => '9784445556667',
+                'judul' => 'JavaScript for Beginners',
+                'penerbit' => 'O’Reilly Media',
+                'penulis' => 'Jane Smith',
+                'deskripsi' => 'Belajar JavaScript dari nol hingga mahir.',
+                'diterbitkan' => '2021-05-30',
+                'cover' => 'cover/javascript-book.jpg',
+                'kategori_id' => 3,
+                'stok' => 8,
+                'status' => 'available',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'isbn' => '9789998887776',
+                'judul' => 'Database Design Principles',
+                'penerbit' => 'McGraw Hill',
+                'penulis' => 'Michael Johnson',
+                'deskripsi' => 'Buku ini membahas tentang prinsip desain database yang baik.',
+                'diterbitkan' => '2020-11-12',
+                'cover' => 'cover/database-book.jpg',
+                'kategori_id' => 4,
+                'stok' => 6,
+                'status' => 'available',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }

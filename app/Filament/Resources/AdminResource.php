@@ -17,9 +17,13 @@ class AdminResource extends Resource
 {
     protected static ?string $model = Admin::class;
 
+
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Daftar Admin';
     protected static ?string $navigationGroup = 'Manajemen Pengguna';
+
+
+
 
     public static function form(Form $form): Form
     {
@@ -72,5 +76,10 @@ class AdminResource extends Resource
             'create' => Pages\CreateAdmin::route('/create'),
             'edit' => Pages\EditAdmin::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return 'Daftar Admin';
     }
 }

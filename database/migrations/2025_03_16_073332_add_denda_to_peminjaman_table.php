@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('peminjaman', function (Blueprint $table) {
-            $table->integer('denda')->default(0)->after('tanggal_kembali'); // Tambah field denda
-        });
+        Schema::table('peminjaman', function (Blueprint $table) {});
     }
 
     public function down()
     {
-        Schema::table('peminjaman', function (Blueprint $table) {
-            $table->dropColumn('denda');
-        });
+        Schema::table('peminjaman', function (Blueprint $table) {});
     }
 };

@@ -74,4 +74,9 @@ class KategoriResource extends Resource
             'edit' => Pages\EditKategori::route('/{record}/edit'),
         ];
     }
+
+    public static function getPluralLabel(): ?string
+    {
+        return 'Manajemen Kategori';
+    }
 }

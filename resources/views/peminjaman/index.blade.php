@@ -71,6 +71,7 @@
                                         <span class="text-gray-400 text-sm">Tidak dapat dibatalkan</span>
                                     @endif
                                 </td>
+                                
                             </tr>
                         @empty
                             <tr>
