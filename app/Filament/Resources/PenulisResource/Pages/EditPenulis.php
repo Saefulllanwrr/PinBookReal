@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\DonationResource\Pages;
+namespace App\Filament\Resources\PenulisResource\Pages;
 
-use App\Filament\Resources\DonationResource;
+use App\Filament\Resources\PenulisResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditDonation extends EditRecord
+class EditPenulis extends EditRecord
 {
-    protected static string $resource = DonationResource::class;
+    protected static string $resource = PenulisResource::class;
 
     protected function getHeaderActions(): array
     {

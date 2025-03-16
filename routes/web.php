@@ -15,9 +15,6 @@ use App\Http\Controllers\PinjamBukuController;
 use App\Http\Controllers\notificationController;
 
 // Halaman Home (hanya bisa diakses oleh user dengan role 'user')
-Route::post('/midtrans/notification', [notificationController::class, 'handleNotification']);
-
-Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
 Route::get('/', [BookController::class, 'showHome'])->middleware('web')->name('home');
 
@@ -26,10 +23,7 @@ Route::get('/search', [BookController::class, 'searchForUser'])->name('search');
 
 // Login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login/submit', [AuthController::class, 'submitLogin'])->name('login.submit');
 
-// Logout
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Resource Routes for Books
 Route::resource('books', BookController::class);
@@ -59,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
 // Grup route yang memerlukan autentikasi
 Route::middleware(['auth'])->group(function () {
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::delete('/peminjaman/{id}/cancel', [PeminjamanController::class, 'cancel'])->name('peminjaman.cancel');
+    Route::post('/peminjaman/return/{id}', [PeminjamanController::class, 'returnBook'])->name('peminjaman.return');
+
     Route::post('/peminjaman', [PinjamBukuController::class, 'store'])->name('peminjaman.store');
     Route::get('/buku-favorit', [PinjamBukuController::class, 'bukuFavorit'])->name('bukuFavorit');
 
@@ -67,7 +64,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Donation routes
-Route::post('/donate/process', [DonationController::class, 'process'])->name('donate.process')->middleware('auth');
 
 
 Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.show');

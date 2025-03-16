@@ -40,36 +40,41 @@
                     {{ $book->kategori->nama_kategori ?? 'Tidak Ada Kategori' }}</p>
                 <p><span class="font-medium">Penulis:</span> {{ $book->penulis }}</p>
                 <p><span class="font-medium">Diterbitkan:</span> {{ $book->diterbitkan ?? '-' }}</p>
-                <p><span class="font-medium">Dipinjam:</span> <span
-                        id="tanggal_pinjam">{{ \Carbon\Carbon::today()->toDateString() }}</span></p>
+                <p><span class="font-medium">ISBN:</span> {{ $book->isbn }}</p>
+
 
             </div>
 
             @if (Auth::check())
-                <div class="mt-6 flex gap-3">
+                <div class="mt-2 flex gap-3">
                     <!-- Form Peminjaman -->
                     <form action="{{ route('peminjaman.store') }}" method="POST" class="w-full">
                         @csrf
                         <input type="hidden" name="buku_id" value="{{ $book->id }}">
-                        <input type="hidden" name="tanggal_pinjam"
-                            value="{{ \Carbon\Carbon::today()->toDateString() }}">
+                        <input type="hidden" name="tanggal_pinjam" value="{{ now()->toDateString() }}">
 
+                        <!-- Input tanggal kembali -->
+
+                        <p class="font-thin pt-5 font-poppins text-red-600">Maksimal pengembalian buku 5 hari setelah
+                            pinjam</p>
+                        <label for="tanggal_kembali" class="block text-gray-700 font-medium mt-3">Tanggal
+                            Pengembalian:</label>
+                        <input type="date" name="tanggal_kembali" id="tanggal_kembali"
+                            class="w-full border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:ring focus:border-blue-500"
+                            required>
 
                         <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 mt-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
                             <i data-lucide="book-open" class="w-5 h-5"></i> Pinjam
                         </button>
                     </form>
 
-                    <!-- Form Tambah ke Favorit -->
-                    <form action="{{ route('favorites.store', $book->id) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center shadow-md">
-                            <i data-lucide="heart" class="w-6 h-6"></i>
-                        </button>
-                    </form>
                 </div>
+
+                <!-- Tambahkan script Lucide -->
+                <script>
+                    lucide.createIcons();
+                </script>
             @else
                 <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk meminjam buku!')"
                     class="block mt-6">

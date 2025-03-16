@@ -20,8 +20,6 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->string('cover');
             $table->string('status')->default('available');
-
-
             $table->timestamps();
         });
     }

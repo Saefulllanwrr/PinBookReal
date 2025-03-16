@@ -48,6 +48,7 @@
                                 <th class="py-3 px-6">Tanggal Pinjam</th>
                                 <th class="py-3 px-6">Tanggal Kembali</th>
                                 <th class="py-3 px-6 text-center">Status</th>
+                                <th class="py-3 px-6 text-center">Denda</th> <!-- Kolom baru untuk Denda -->
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -69,10 +70,18 @@
                                             <span class="text-red-500 font-semibold">{{ ucfirst($item->status) }}</span>
                                         @endif
                                     </td>
+                                    <td class="py-4 px-6 text-center">
+                                        @if ($item->denda > 0)
+                                            Rp {{ number_format($item->denda, 0, ',', '.') }}
+                                            <!-- Format denda sebagai mata uang -->
+                                        @else
+                                            - <!-- Tampilkan tanda "-" jika tidak ada denda -->
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="py-4 px-6 text-center text-slate-500">
+                                    <td colspan="5" class="py-4 px-6 text-center text-slate-500">
                                         Tidak ada riwayat peminjaman
                                     </td>
                                 </tr>

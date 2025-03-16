@@ -47,131 +47,59 @@
                             <tr class="border-b border-slate-200 hover:bg-slate-50 transition duration-200">
                                 <td class="py-5 px-6">{{ $pinjam->book->judul }}</td>
                                 <td class="py-5 px-6">{{ $pinjam->tanggal_pinjam }}</td>
+                                <td class="py-5 px-6">
+                                    <span
+                                        class="px-3 py-1 rounded-full text-white text-sm font-semibold 
+                    {{ $pinjam->status == 'menunggu' ? 'bg-yellow-500' : ($pinjam->status == 'dipinjam' ? 'bg-blue-500' : 'bg-green-500') }}">
+                                        {{ ucfirst($pinjam->status) }}
+                                    </span>
+                                </td>
+
+
                                 <td class="py-5 px-6 text-center space-x-4">
-                                    <button type="button" onclick="openDonationForm({{ $pinjam->id }})"
-                                        class="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:bg-blue-600 transition duration-300">
-                                        Donate
-                                    </button>
+                                    @if ($pinjam->status == 'menunggu')
+                                        <form action="{{ route('peminjaman.cancel', $pinjam->id) }}" method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin membatalkan peminjaman ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="bg-red-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:bg-red-600 transition duration-300">
+                                                Batalkan
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-gray-400 text-sm">Tidak dapat dibatalkan</span>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="py-5 px-6 text-center text-slate-500">
+                                <td colspan="5" class="py-5 px-6 text-center text-slate-500">
                                     Tidak ada buku yang sedang dipinjam
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>
     </div>
 
     <!-- Toastr JS -->
+    @if (session('success'))
+        toastr.success("{{ session('success') }}");
+    @endif
+
+    @if (session('error'))
+        toastr.error("{{ session('error') }}");
+    @endif
+
+    @if (session('status'))
+        toastr.info("{{ session('status') }}");
+    @endif
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        /**
-         * Menampilkan form input untuk donasi
-         */
-        function openDonationForm(bookId) {
-            Swal.fire({
-                title: "Masukkan Nominal Donasi",
-                input: "number",
-                inputAttributes: {
-                    min: 0, // Minimal donasi
-                    step: 1000 // Kelipatan donasi
-                },
-                showCancelButton: true,
-                confirmButtonText: "Donate",
-                cancelButtonText: "Batal",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const amount = result.value;
-                    if (amount >= 1000) {
-                        processDonation(amount, bookId);
-                    } else {
-                        Swal.fire("Kesalahan", "Nominal donasi minimal Rp 1000.", "error");
-                    }
-                }
-            });
-        }
 
-        /**
-         * Mengirim request AJAX untuk memproses donasi dengan Midtrans
-         */
-        function processDonation(amount, bookId) {
-            $.ajax({
-                url: "{{ route('donate.process') }}", // Route ke controller donasi
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    amount: amount,
-                    book_id: bookId,
-                    name: "{{ optional(auth()->user())->name }}",
-                    email: "{{ optional(auth()->user())->email }}",
-
-                },
-                success: function(response) {
-                    // Menjalankan pembayaran dengan Midtrans
-                    snap.pay(response.snap_token, {
-                        onSuccess: function(result) {
-                            handlePaymentResponse(result, "success");
-                        },
-                        onPending: function(result) {
-                            handlePaymentResponse(result, "pending");
-                        },
-                        onError: function(result) {
-                            handlePaymentResponse(result, "error");
-                        }
-                    });
-                },
-                error: function(xhr) {
-                    Swal.fire("Kesalahan", "Terjadi kesalahan saat memproses donasi.", "error");
-                    console.error(xhr.responseText);
-                }
-            });
-        }
-
-        /**
-         * Menangani respons pembayaran dari Midtrans
-         */
-        function handlePaymentResponse(result, status) {
-            let message;
-            switch (status) {
-                case "success":
-                    message = "Terima kasih atas donasi Anda!";
-                    break;
-                case "pending":
-                    message = "Pembayaran Anda sedang diproses.";
-                    break;
-                case "error":
-                    message = "Terjadi kesalahan dalam pembayaran.";
-                    break;
-            }
-
-            Swal.fire({
-                title: status === "success" ? "Berhasil" : "Gagal",
-                text: message,
-                icon: status === "success" ? "success" : "error"
-            }).then(() => {
-                if (status === "success") {
-                    location.reload(); // Reload halaman setelah sukses
-                }
-            });
-        }
-
-        // Toastr Notifications
-        @if (session('success'))
-            toastr.success("{{ session('success') }}");
-        @endif
-
-        @if (session('error'))
-            toastr.error("{{ session('error') }}");
-        @endif
-
-        @if (session('status'))
-            toastr.info("{{ session('status') }}");
-        @endif
     </script>
 
 </body>

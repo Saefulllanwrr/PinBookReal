@@ -41,17 +41,24 @@ class PinjamBukuController extends Controller
             return redirect()->back()->with('error', 'Stok buku habis, tidak dapat meminjam.');
         }
 
-        // Transaksi untuk menjaga konsistensi data
-        DB::transaction(function () use ($book, $request, $userId) {
-            Peminjaman::create([
-                'user_id' => $userId,
-                'buku_id' => $request->buku_id,
-                'tanggal_pinjam' => $request->tanggal_pinjam,
-                'tanggal_kembali' => $request->tanggal_kembali,
-                'status' => 'menunggu',
-            ]);
-        });
+        try {
+            // Transaksi untuk menjaga konsistensi data
+            DB::transaction(function () use ($book, $request, $userId) {
+                // Simpan peminjaman dengan status menunggu
+                $peminjaman = Peminjaman::create([
+                    'user_id' => $userId,
+                    'buku_id' => $request->buku_id,
+                    'tanggal_pinjam' => $request->tanggal_pinjam,
+                    'tanggal_kembali' => $request->tanggal_kembali,
+                    'status' => 'menunggu',
+                ]);
 
-        return redirect()->route('peminjaman.index')->with('success', 'Permintaan peminjaman berhasil diajukan, menunggu persetujuan admin.');
+                // **Catatan:** Stok tidak berkurang sampai peminjaman disetujui oleh admin.
+            });
+
+            return redirect()->route('peminjaman.index')->with('success', 'Permintaan peminjaman berhasil diajukan, menunggu persetujuan admin.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses peminjaman.');
+        }
     }
 }

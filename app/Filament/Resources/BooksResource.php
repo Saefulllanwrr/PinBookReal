@@ -35,7 +35,8 @@ class BooksResource extends Resource
                 TextInput::make('isbn')
                     ->type('number')
                     ->label('ISBN')
-                    ->required(),
+                    ->required()
+                    ->rule('digits:13'),
 
                 TextInput::make('judul')
                     ->label('Judul Buku')
