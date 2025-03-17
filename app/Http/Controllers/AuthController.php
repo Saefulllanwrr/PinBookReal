@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
@@ -35,12 +32,14 @@ class AuthController extends Controller
             ->first();
 
         if (!$user) {
-            return back()->with('error', 'Username atau Password salah');
+            flash()->error('Username atau Email tidak ditemukan');
+            return back();
         }
 
         // Cek apakah akun diblokir
         if ($user->is_blocked) {
-            return back()->with('error', 'Akun Anda telah diblokir. Silakan hubungi admin.');
+            flash()->error('Akun Anda telah diblokir. Silakan hubungi admin.');
+            return back();
         }
 
         // Cek apakah "Remember Me" dicentang
@@ -52,10 +51,11 @@ class AuthController extends Controller
             Auth::attempt(['email' => $credentials['username'], 'password' => $credentials['password']], $remember)
         ) {
             $request->session()->regenerate();
-            return redirect()->route('home')->with('success', 'Login Berhasil!');
+            flash()->success('Login Berhasil!');
+            return redirect()->route('home');
         }
-
-        return back()->with('error', 'Username atau Password salah');
+        flash()->success('Username atau Password salah!');
+        return back();
     }
 
 
@@ -69,6 +69,7 @@ class AuthController extends Controller
 
         // Hapus cookie "Remember Me"
         $cookie = Cookie::forget(Auth::getRecallerName());
-        return redirect()->route('login')->with('success', 'Berhasil Logout!')->withCookie($cookie);
+        flash()->success('Logout Berhasil!');
+        return redirect()->route('login')->withCookie($cookie);
     }
 }

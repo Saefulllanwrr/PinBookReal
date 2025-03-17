@@ -32,13 +32,15 @@ class PinjamBukuController extends Controller
             ->exists();
 
         if ($existingPeminjaman) {
-            return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman atau masih meminjam buku ini.');
+            flash()->error('Anda sudah mengajukan peminjaman atau masih meminjam buku ini.');
+            return redirect()->back();
         }
 
         $book = Book::findOrFail($bukuId);
 
         if ($book->stok < 1) {
-            return redirect()->back()->with('error', 'Stok buku habis, tidak dapat meminjam.');
+            flash()->error('Stok buku habis, tidak dapat meminjam.');
+            return redirect()->back();
         }
 
         try {
@@ -55,9 +57,11 @@ class PinjamBukuController extends Controller
 
                 $book->increaseBorrowCount();
             });
-
-            return redirect()->route('peminjaman.index')->with('success', 'Permintaan peminjaman berhasil diajukan, menunggu persetujuan admin.');
+            flash()->success('Permintaan peminjaman
+berhasil diajukan, menunggu persetujuan admin.');
+            return redirect()->route('peminjaman.index');
         } catch (\Exception $e) {
+            flash()->error('Terjadi kesalahan saat memproses peminjaman.');
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses peminjaman.');
         }
     }

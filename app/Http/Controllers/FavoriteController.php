@@ -21,7 +21,8 @@ class FavoriteController extends Controller
 
         // Cek apakah sudah difavoritkan
         if ($user->favorites()->where('book_id', $bookId)->exists()) {
-            return back()->with('error', 'Buku sudah ada di favorit!');
+            flash()->error('Buku sudah ada di favorit!');
+            return redirect()->back(); // Redirect ke halaman sebelumnya
         }
 
         Favorite::create([
@@ -29,7 +30,8 @@ class FavoriteController extends Controller
             'book_id' => $bookId,
         ]);
 
-        return back()->with('success', 'Buku berhasil ditambahkan ke favorit!');
+        flash()->success('Buku berhasil ditambahkan ke favorit!');
+        return redirect()->back(); // Redirect ke halaman sebelumnya
     }
 
     public function destroy($id)
@@ -37,9 +39,11 @@ class FavoriteController extends Controller
         $favorite = Favorite::where('user_id', Auth::id())->where('book_id', $id)->first();
         if ($favorite) {
             $favorite->delete();
-            return back()->with('success', 'Buku dihapus dari favorit!');
+            flash()->success('Buku dihapus dari favorit!');
+            return redirect()->back(); // Redirect ke halaman sebelumnya
         }
 
-        return back()->with('error', 'Buku tidak ditemukan!');
+        flash()->error('Buku tidak ditemukan!');
+        return redirect()->back(); // Redirect ke halaman sebelumnya
     }
 }

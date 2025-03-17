@@ -19,6 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register alias 'checkRole' for middleware CheckRole
         $middleware->alias([
             'checkRole' => CheckRole::class,
+
+
         ]);
         $middleware->append(StartSession::class);
     })

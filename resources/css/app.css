@@ -36,6 +36,9 @@ body {
 .btn-secondary:hover {
     background-color: #4b5563;
 }
+.notify {
+    z-index: 9999 !important;
+}
 
 @tailwind base;
 @tailwind components;

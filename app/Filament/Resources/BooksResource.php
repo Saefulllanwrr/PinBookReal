@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use BcMath\Number;
 use Filament\Forms;
 use App\Models\Book;
 use Filament\Tables;
@@ -21,6 +22,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\BooksResource\Pages;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
@@ -127,7 +129,18 @@ class BooksResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                ExportBulkAction::make(),
+                ExportBulkAction::make()
+                    ->exports([
+                        ExcelExport::make()->withColumns([
+                            Column::make('isbn')->heading('ISBN')->format(NumberFormat::FORMAT_NUMBER),
+                            Column::make('judul')->heading('Judul Buku'),
+                            Column::make('penulis')->heading('Penulis'),
+                            Column::make('penerbit')->heading('Penerbit'),
+                            Column::make('diterbitkan')->heading('Tanggal Terbit'),
+                            Column::make('kategori.nama_kategori')->heading('Kategori'),
+                            Column::make('stok')->heading('Stok'),
+                        ]),
+                    ]),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

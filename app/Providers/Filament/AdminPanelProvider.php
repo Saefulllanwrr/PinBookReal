@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissions;
+use Filament\Facades\Filament;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -65,5 +67,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+            
     }
 }

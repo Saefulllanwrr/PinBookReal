@@ -20,14 +20,16 @@ class BookChart extends ChartWidget
     {
         $totalBooks = Book::count();
         $borrowedBooks = Peminjaman::where('status', 'dipinjam')->count(); // Menggunakan status yang benar
-        $availableBooks = Book::where('status', 'available')->count(); // Menggunakan status yang benar
+        $activeBorrowers = Peminjaman::where('status', 'dipinjam')
+            ->distinct('user_id') // Hitung user yang unik
+            ->count('user_id'); // Menggunakan status yang benar
 
         return [
-            'labels' => ['Total Buku', 'Dipinjam', 'Tersedia'],
+            'labels' => ['Total Buku', 'Dipinjam', 'Peminjam'],
             'datasets' => [
                 [
-                    'label' => 'Jumlah Buku',
-                    'data' => [$totalBooks, $borrowedBooks, $availableBooks],
+                    'label' => 'Statistik Peminjaman',
+                    'data' => [$totalBooks, $borrowedBooks, $activeBorrowers],
                     'backgroundColor' => ['#36A2EB', '#FF6384', '#4CAF50'],
                 ],
             ],

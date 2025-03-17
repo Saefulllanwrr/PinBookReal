@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Peminjaman;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 
@@ -49,8 +48,8 @@ class PeminjamanController extends Controller
 
         // Hapus data peminjaman
         $peminjaman->delete();
-
-        return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil dibatalkan.');
+        flash()->success('Peminjaman berhasil dibatalkan');
+        return redirect()->route('peminjaman.index');
     }
 
     // Mengembalikan buku & menghitung denda
@@ -84,7 +83,6 @@ class PeminjamanController extends Controller
             $peminjaman->book->increment('stok');
         }
 
-        return redirect()->route('peminjaman.index')
-            ->with('success', "Buku berhasil dikembalikan. Denda: Rp " . number_format($denda, 0, ',', '.'));
+        return redirect()->route('peminjaman.index');
     }
 }

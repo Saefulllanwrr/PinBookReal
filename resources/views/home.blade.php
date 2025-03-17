@@ -5,26 +5,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 
     <title>PinBook - Aplikasi Peminjaman Buku</title>
+
     @vite('resources/css/app.css')
 </head>
 
 <body>
-
-
     <!-- Header -->
+
     <x-navbar />
-
-
     <!-- Hero Section -->
     <main
         class="w-full h-[500px] md:h-[600px] bg-gradient-to-r from-[#0B192C] to-[#1A2A3C] dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
         <div class="container mx-auto h-full flex flex-col md:flex-row items-center justify-center px-6 md:px-12">
+
             <!-- Teks Sambutan -->
             <section class="w-[837px] ms-[59px] flex flex-col justify-center " data-aos="fade-right">
                 <h2 class="font-poppins font-bold text-[40px] text-white pt-[70px]">
@@ -96,7 +94,7 @@
                                 <button
                                     class="w-full bg-[#FF6500] text-white py-3 rounded-xl font-bold hover:bg-[#E55A00] transition duration-300 transform hover:scale-105 flex items-center justify-center"
                                     onclick="event.stopPropagation()">
-                                    <i class="fas fa-book-reader mr-2"></i> Pinjam Buku
+                                    Pinjam Buku
                                 </button>
                             </a>
                         </div>
@@ -179,26 +177,6 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    <!-- Lucide Icons -->
-    <script>
-        lucide.createIcons();
-    </script>
-
-    <!-- Toastr Notification -->
-    <script>
-        $(document).ready(function() {
-            @if (session('error'))
-                toastr.error({!! json_encode(session('error')) !!});
-            @endif
-
-            @if (session('success'))
-                toastr.success({!! json_encode(session('success')) !!});
-            @endif
-        });
-    </script>
 
 </body>
 

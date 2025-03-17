@@ -17,15 +17,16 @@ class BookController extends Controller
 
         // Filter berdasarkan kategori
         $booksQuery->when($request->filled('kategori'), function ($query) use ($request) {
-            $query->where('kategori_id', $request->kategori);
+            $query->where('kategori_id', $request->input('kategori'));
         });
 
         // Pencarian berdasarkan judul, penulis, atau penerbit
         $booksQuery->when($request->filled('query'), function ($query) use ($request) {
-            $query->where(function ($q) use ($request) {
-                $q->where('judul', 'like', '%' . $request->query . '%')
-                    ->orWhere('penulis', 'like', '%' . $request->query . '%')
-                    ->orWhere('penerbit', 'like', '%' . $request->query . '%');
+            $searchQuery = $request->input('query'); // Ambil input query dengan aman
+            $query->where(function ($q) use ($searchQuery) {
+                $q->where('judul', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('penulis', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('penerbit', 'like', '%' . $searchQuery . '%');
             });
         });
 
@@ -39,6 +40,7 @@ class BookController extends Controller
 
         return view('books.katalogBuku', compact('kategori', 'books', 'favoriteBooks'));
     }
+
 
     // Menampilkan detail buku dalam format JSON
     public function getBookDetail($id)

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+
     @vite('resources/css/app.css')
 </head>
 
@@ -21,86 +22,58 @@
 
     <!-- Konten -->
     <main class="flex flex-col md:flex-row items-center justify-center px-8 gap-8 w-full max-w-5xl mt-24">
-        <!-- Menambahkan margin-top agar card tidak tertutup navbar -->
-
         <!-- Kartu Buku -->
         <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96">
             <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}"
                 class="rounded-lg mb-4 w-full h-64 object-cover shadow-md">
             <h2 class="text-2xl font-bold text-center text-gray-800">{{ $book->judul }}</h2>
-
-            @if (Auth::check())
-                <div class="mt-4">
-                    <label class="block text-gray-700 font-medium">Berikan Rating:</label>
-                    <div id="star-rating" class="flex space-x-2 text-3xl cursor-pointer text-gray-400">
-                        @for ($i = 1; $i <= 5; $i++)
-                            <span data-value="{{ $i }}" class="star">☆</span>
-                        @endfor
-                    </div>
-                    <form id="rating-form" action="{{ url('/books/' . $book->id . '/rate') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="rating" id="rating-value">
-                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg mt-2 hidden">
-                            Kirim Rating
-                        </button>
-                    </form>
-                </div>
-
-                @if (session('success'))
-                    <p class="text-green-600">{{ session('success') }}</p>
-                @endif
-
-                <h3 class="mt-4">Rata-rata Rating: <span id="average-rating">0</span> / 5</h3>
-            @endif
-
-
         </div>
 
         <!-- Konfirmasi Peminjaman -->
-        <div class="bg-white shadow-lg rounded-2xl p-8 w-full md:w-96">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Konfirmasi Peminjaman</h2>
+        <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96">
+            <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}"
+                class="rounded-lg mb-4 w-full h-64 object-cover shadow-md">
+            <h2 class="text-2xl font-bold text-center text-gray-800">{{ $book->judul }}</h2>
 
-            <div class="space-y-4 text-gray-700">
-                <p><span class="font-medium">Judul:</span> {{ $book->judul }}</p>
-                <p><span class="font-medium">Kategori:</span>
-                    {{ $book->kategori->nama_kategori ?? 'Tidak Ada Kategori' }}</p>
-                <p><span class="font-medium">Penulis:</span> {{ $book->penulis }}</p>
-                <p><span class="font-medium">Diterbitkan:</span> {{ $book->diterbitkan ?? '-' }}</p>
-                <p><span class="font-medium">ISBN:</span> {{ $book->isbn }}</p>
-
-
-            </div>
-
+            <!-- Button Tambahkan ke Favorit -->
             @if (Auth::check())
-                <div class="mt-2 flex gap-3">
-                    <!-- Form Peminjaman -->
-                    <form action="{{ route('peminjaman.store') }}" method="POST" class="w-full">
-                        @csrf
-                        <input type="hidden" name="buku_id" value="{{ $book->id }}">
-                        <input type="hidden" name="tanggal_pinjam" value="{{ now()->toDateString() }}">
+                <form action="{{ route('favorite.store', $book->id) }}" method="POST" class="mt-4">
+                    @csrf
+                    <button type="submit"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                        <i data-lucide="heart" class="w-5 h-5"></i> Tambahkan ke Favorit
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk menambahkan buku ke favorit!')"
+                    class="block mt-4">
+                    <button
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                        <i data-lucide="heart" class="w-5 h-5"></i> Login untuk Menambahkan ke Favorit
+                    </button>
+                </a>
+            @endif
 
-                        <!-- Input tanggal kembali -->
+            <!-- Form Peminjaman -->
+            @if (Auth::check())
+                <form action="{{ route('peminjaman.store') }}" method="POST" class="mt-4">
+                    @csrf
+                    <input type="hidden" name="buku_id" value="{{ $book->id }}">
+                    <input type="hidden" name="tanggal_pinjam" value="{{ now()->toDateString() }}">
 
-                        <p class="font-thin pt-5 font-poppins text-red-600">Maksimal pengembalian buku 5 hari setelah
-                            pinjam</p>
-                        <label for="tanggal_kembali" class="block text-gray-700 font-medium mt-3">Tanggal
-                            Pengembalian:</label>
-                        <input type="date" name="tanggal_kembali" id="tanggal_kembali"
-                            class="w-full border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:ring focus:border-blue-500"
-                            required>
+                    <p class="font-thin pt-5 font-poppins text-red-600">Maksimal pengembalian buku 5 hari setelah pinjam
+                    </p>
+                    <label for="tanggal_kembali" class="block text-gray-700 font-medium mt-3">Tanggal
+                        Pengembalian:</label>
+                    <input type="date" name="tanggal_kembali" id="tanggal_kembali"
+                        class="w-full border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:ring focus:border-blue-500"
+                        required>
 
-                        <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 mt-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
-                            <i data-lucide="book-open" class="w-5 h-5"></i> Pinjam
-                        </button>
-                    </form>
-
-                </div>
-
-                <!-- Tambahkan script Lucide -->
-                <script>
-                    lucide.createIcons();
-                </script>
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 mt-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                        <i data-lucide="book-open" class="w-5 h-5"></i> Pinjam
+                    </button>
+                </form>
             @else
                 <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk meminjam buku!')"
                     class="block mt-6">
@@ -113,70 +86,9 @@
         </div>
     </main>
 
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         lucide.createIcons();
-        $(document).ready(function() {
-            @if (session('error'))
-                toastr.error("{{ session('error') }}");
-            @endif
-
-            @if (session('success'))
-                toastr.success("{{ session('success') }}");
-            @endif
-        });
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const stars = document.querySelectorAll("#star-rating .star");
-            const ratingValue = document.getElementById("rating-value");
-            const ratingForm = document.getElementById("rating-form");
-            const submitButton = ratingForm.querySelector("button");
-
-            stars.forEach(star => {
-                star.addEventListener("mouseover", function() {
-                    const value = this.getAttribute("data-value");
-                    highlightStars(value);
-                });
-
-                star.addEventListener("click", function() {
-                    const value = this.getAttribute("data-value");
-                    ratingValue.value = value;
-                    submitButton.classList.remove("hidden");
-                });
-
-                star.addEventListener("mouseleave", function() {
-                    if (!ratingValue.value) {
-                        resetStars();
-                    } else {
-                        highlightStars(ratingValue.value);
-                    }
-                });
-            });
-
-            function highlightStars(value) {
-                stars.forEach(star => {
-                    star.innerText = star.getAttribute("data-value") <= value ? "★" : "☆";
-                    star.classList.toggle("text-yellow-400", star.getAttribute("data-value") <= value);
-                });
-            }
-
-            function resetStars() {
-                stars.forEach(star => {
-                    star.innerText = "☆";
-                    star.classList.remove("text-yellow-400");
-                });
-            }
-
-            fetch("{{ url('/books/' . $book->id . '/rating') }}")
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('average-rating').innerText = data.average_rating.toFixed(1);
-                });
-        });
-    </script>
-
 </body>
 
 </html>

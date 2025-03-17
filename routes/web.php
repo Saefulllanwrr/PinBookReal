@@ -1,27 +1,22 @@
 <?php
 
-use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\AvatarController;
-use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RiwayatController;
-use App\Http\Controllers\DonationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PinjamBukuController;
-use App\Http\Controllers\notificationController;
 
 // Halaman Home (hanya bisa diakses oleh user dengan role 'user')
 
 Route::get('/', [BookController::class, 'showHome'])->middleware('web')->name('home');
 
 // Pencarian Buku
-Route::get('/search', [BookController::class, 'searchForUser'])->name('search');
+Route::get('/search', [BookController::class, 'index'])->name('search');
 
 // Login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -47,7 +42,9 @@ Route::get('/peminjaman/{id}', [BookController::class, 'showPeminjaman'])->name(
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
-    Route::post('/favorites/{bookId}', [FavoriteController::class, 'store'])->name('favorites.store');
+
+    Route::post('/favorites/{bookId}', [FavoriteController::class, 'store'])->middleware('auth')->name('favorite.store');
+
     Route::delete('/favorites/{bookId}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
 });
 
@@ -65,10 +62,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
 });
 
-Route::post('/books/{book}/rate', [RatingController::class, 'store'])->middleware('auth');
-Route::get('/books/{book}/rating', [RatingController::class, 'getAverageRating']);
-
 
 Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'submitContactForm'])->name('contact.submit');
-

@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+
 
 class Admin extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable, MustVerifyEmail;
+    use HasFactory;
+
 
     protected $fillable = ['name', 'email', 'password', 'role', 'remember_token'];
 

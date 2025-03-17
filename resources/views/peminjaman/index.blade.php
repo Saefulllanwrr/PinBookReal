@@ -5,15 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PinBook Peminjaman</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
-    <!-- Toastr CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+    @notifyCss
+    @notifyJs
     @vite('resources/css/app.css')
 </head>
 
 <body class="bg-slate-50 font-poppins">
+
+    <x-notify::notify />
     <!-- Navbar -->
     <x-navbar class="fixed top-0 left-0 w-full bg-white shadow-md z-50"></x-navbar>
 
@@ -24,13 +26,7 @@
         <div class="bg-white shadow-lg rounded-xl p-8">
 
 
-            <!-- Notifikasi Pesan -->
-            @if (session('status'))
-                <div
-                    class="flex items-center bg-green-500 text-white text-sm font-semibold p-4 rounded-lg shadow-md mb-6">
-                    {{ session('status') }}
-                </div>
-            @endif
+
 
             <!-- Tabel Buku yang Dipinjam -->
             <div class="overflow-x-auto">
@@ -71,7 +67,7 @@
                                         <span class="text-gray-400 text-sm">Tidak dapat dibatalkan</span>
                                     @endif
                                 </td>
-                                
+
                             </tr>
                         @empty
                             <tr>
@@ -86,23 +82,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Toastr JS -->
-    @if (session('success'))
-        toastr.success("{{ session('success') }}");
-    @endif
-
-    @if (session('error'))
-        toastr.error("{{ session('error') }}");
-    @endif
-
-    @if (session('status'))
-        toastr.info("{{ session('status') }}");
-    @endif
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    </script>
-
 </body>
 
 </html>

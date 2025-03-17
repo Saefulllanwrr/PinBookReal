@@ -5,10 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PinBook - Login</title>
-
-    <!-- Toastr CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -16,11 +12,14 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- Tailwind CSS -->
+
     @vite('resources/css/app.css')
 </head>
 
 <body
     class="font-poppins bg-gradient-to-r from-slate-900 to-[#0B192C] flex items-center justify-center min-h-screen p-4">
+
+
     <div class="w-full max-w-md bg-[#0B192C] rounded-2xl shadow-2xl p-8">
         <!-- Header -->
         <div class="text-center">
@@ -77,27 +76,6 @@
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    <!-- Lucide Icons -->
-    <script>
-        lucide.createIcons();
-    </script>
-
-    <!-- Toastr Notification -->
-    <script>
-        $(document).ready(function() {
-            @if (session('error'))
-                toastr.error({!! json_encode(session('error')) !!});
-            @endif
-
-            @if (session('success'))
-                toastr.success({!! json_encode(session('success')) !!});
-            @endif
-        });
-    </script>
 
 </body>
 
