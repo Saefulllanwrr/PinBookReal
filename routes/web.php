@@ -5,6 +5,7 @@ use App\Http\Controllers\AkunController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\KategoriController;
@@ -65,3 +66,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'submitContactForm'])->name('contact.submit');
+
+// Route untuk menampilkan halaman profil
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+
+// Route untuk mengupdate profil
+Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');

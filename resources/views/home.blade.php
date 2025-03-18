@@ -104,64 +104,57 @@
         </div>
     </section>
 
-
-    <!-- Kontak Section -->
-    <section id="kontak" class="w-full py-10 bg-white" data-aos="fade-up">
+    <section id="layanan-kami" class="w-full py-10 bg-[#F4F4F4]" data-aos="fade-up">
         <div class="container mx-auto px-6">
-            <!-- Judul Kontak -->
             <h2 class="text-[36px] font-poppins font-bold text-[#0B192C] text-center mb-8" data-aos="zoom-in">
-                Hubungi Kami
+                Layanan Kami
             </h2>
-
-            <!-- Form Kontak -->
-            <div class="max-w-2xl mx-auto bg-[#F4F4F4] p-8 rounded-lg shadow-md" data-aos="fade-up"
-                data-aos-delay="200">
-                <form action="{{ route('contact.submit') }}" method="POST">
-                    @csrf
-                    <div class="mb-6">
-                        <label for="name" class="block font-poppins font-medium text-[#0B192C] mb-2">Nama</label>
-                        <input type="text" id="name" name="name" required
-                            class="w-full px-4 py-2 rounded-lg border border-[#D9D9D9] focus:outline-none focus:border-[#FF6500]"
-                            placeholder="Masukkan nama Anda">
-                    </div>
-                    <div class="mb-6">
-                        <label for="email" class="block font-poppins font-medium text-[#0B192C] mb-2">Email</label>
-                        <input type="email" id="email" name="email" required
-                            class="w-full px-4 py-2 rounded-lg border border-[#D9D9D9] focus:outline-none focus:border-[#FF6500]"
-                            placeholder="Masukkan email Anda">
-                    </div>
-                    <div class="mb-6">
-                        <label for="message" class="block font-poppins font-medium text-[#0B192C] mb-2">Pesan</label>
-                        <textarea id="message" name="message" rows="5" required
-                            class="w-full px-4 py-2 rounded-lg border border-[#D9D9D9] focus:outline-none focus:border-[#FF6500]"
-                            placeholder="Masukkan pesan Anda"></textarea>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit"
-                            class="w-full bg-[#FF6500] text-white py-2 rounded-lg font-bold hover:bg-[#E55A00]">
-                            Kirim Pesan
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Informasi Kontak -->
-            <div class="mt-12 text-center" data-aos="fade-up" data-aos-delay="400">
-                <h3 class="font-poppins font-bold text-[24px] text-[#0B192C] mb-4">Atau hubungi kami melalui:</h3>
-                <div class="flex justify-center items-center gap-6">
-                    <a href="mailto:saefulllanwrrr@gmail.com" class="text-[#FF6500] hover:text-[#E55A00]">
-                        <i class="fas fa-envelope text-3xl"></i>
-                    </a>
-                    <a href="https://wa.me/62085720800889" class="text-[#FF6500] hover:text-[#E55A00]">
-                        <i class="fab fa-whatsapp text-3xl"></i>
-                    </a>
-                    <a href="https://www.instagram.com/saefullanwrrr" class="text-[#FF6500] hover:text-[#E55A00]">
-                        <i class="fab fa-instagram text-3xl"></i>
-                    </a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 text-center hover:shadow-sm duration-300">
+                    <i class="fas fa-book-open text-[#FF6500] text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Peminjaman Buku</h3>
+                    <p class="text-slate-600 dark:text-gray-300">Pinjam buku favorit Anda dengan mudah dan cepat.</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 text-center hover:shadow-sm duration-300">
+                    <i class="fas fa-search text-[#FF6500] text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Pencarian Cepat</h3>
+                    <p class="text-slate-600 dark:text-gray-300">Temukan buku berdasarkan judul, penulis, atau kategori.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 text-center hover:shadow-sm duration-300">
+                    <i class="fas fa-clock text-[#FF6500] text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Pengembalian Mudah</h3>
+                    <p class="text-slate-600 dark:text-gray-300">Kembalikan buku dengan proses yang sederhana dan cepat.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
+
+    <section id="faq" class="w-full py-10 bg-[#F4F4F4]" data-aos="fade-up">
+        <div class="container mx-auto px-6">
+            <h2 class="text-[36px] font-poppins font-bold text-[#0B192C] text-center mb-8" data-aos="zoom-in">
+                FAQ
+            </h2>
+            <div class="grid grid-cols-1 gap-6">
+                <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 hover:shadow-sm duration-300">
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Bagaimana cara meminjam buku?</h3>
+                    <p class="text-slate-600 dark:text-gray-300">Anda dapat meminjam buku dengan mencari buku yang Anda
+                        inginkan, lalu klik tombol "Pinjam Buku".</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 hover:shadow-sm duration-300">
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Berapa lama waktu peminjaman?</h3>
+                    <p class="text-slate-600 dark:text-gray-300">Waktu peminjaman biasanya 14 hari, namun dapat
+                        diperpanjang jika diperlukan.</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 hover:shadow-sm duration-300">
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Apakah ada biaya peminjaman?</h3>
+                    <p class="text-slate-600 dark:text-gray-300">Tidak, PinBook tidak mengenakan biaya peminjaman.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
     <!-- Footer -->
     <x-footer />

@@ -67,6 +67,7 @@ class BooksResource extends Resource
                     ->disk('public')
                     ->directory('covers')
                     ->visibility('public')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'])
                     ->required(),
 
                 Select::make('kategori_id')
