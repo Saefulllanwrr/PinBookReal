@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PinBook Katalog</title>
-    @vite(['resources/css/pagination.css', 'resources/css/app.css'])
+    @vite(['resources/css/pagination.css', 'resources/css/app.css', 'resources/css/hover.css'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
@@ -42,6 +42,7 @@
             </select>
         </form>
     </div>
+
     <!-- Buku Terpopuler -->
     <div class="container mx-auto px-4 mt-8">
         <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Buku Terpopuler</h3>
@@ -54,47 +55,54 @@
                 @foreach ($favoriteBooks as $book)
                     <div
                         class="bg-white dark:bg-slate-700 shadow-2xl rounded-3xl overflow-hidden hover:shadow-3xl duration-300">
-                        <div onclick="openModal({{ $book->id }})" class="cursor-pointer">
+                        <div class="relative">
                             <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
                                 class="w-full h-72 object-cover rounded-t-3xl">
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">
-                                    {{ $book->judul }}
-                                </h3>
-                                <p class="text-slate-600 dark:text-slate-300 text-sm mt-2 flex items-center">
-                                    <i class="fas fa-user-edit mr-2"></i> Penulis: {{ $book->penulis }}
-                                </p>
-                                <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
-                                    <i class="fas fa-building mr-2"></i> Penerbit: {{ $book->penerbit }}
-                                </p>
-                                <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
-                                    <i class="fas fa-tag mr-2"></i> Kategori: {{ $book->kategori->nama_kategori }}
-                                </p>
-                                <p class="text-slate-600 dark:text-slate-300 text-sm"> {{ $book->borrow_count }}
-                                    kali di pinjam</p>
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                                onclick="openModal({{ $book->id }})">
+                                <span class="text-white text-xl font-bold font-poppins">Detail</span>
                             </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-slate-800 dark:text-white truncate">{{ $book->judul }}
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-300 text-sm mt-2 flex items-center">
+                                <i class="fas fa-user-edit mr-2"></i> Penulis: {{ $book->penulis }}
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
+                                <i class="fas fa-building mr-2"></i> Penerbit: {{ $book->penerbit }}
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-300 text-sm flex items-center">
+                                <i class="fas fa-tag mr-2"></i> Kategori: {{ $book->kategori->nama_kategori }}
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-300 text-sm"> {{ $book->borrow_count }} kali di
+                                pinjam</p>
                         </div>
                     </div>
                 @endforeach
             </div>
         @endif
     </div>
+
     <!-- Buku Pilihan -->
     <div class="container mx-auto px-4 mt-8">
         <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Buku Pilihan</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach ($books as $book)
                 <div class="bg-white dark:bg-slate-700 shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
-                    <div onclick="openModal({{ $book->id }})" class="cursor-pointer">
+                    <div class="relative">
                         <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover {{ $book->judul }}"
                             class="w-full h-64 object-cover rounded-t-xl">
-                        <div class="p-4">
-                            <h3 class="text-lg font-bold text-slate-800 dark:text-white truncate">{{ $book->judul }}
-                            </h3>
-                            <p class="text-sm text-slate-600 dark:text-slate-300">Penulis: {{ $book->penulis }}</p>
-                            <p class="text-sm text-slate-600 dark:text-slate-300">Kategori:
-                                {{ $book->kategori->nama_kategori }}</p>
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                            onclick="openModal({{ $book->id }})">
+                            <span class="text-white text-xl font-bold">Detail</span>
                         </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white truncate">{{ $book->judul }}</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300">Penulis: {{ $book->penulis }}</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-300">Kategori:
+                            {{ $book->kategori->nama_kategori }}</p>
                     </div>
                     <div class="p-4 flex gap-2">
                         <a href="{{ route('peminjaman', ['id' => $book->id]) }}" class="w-full">

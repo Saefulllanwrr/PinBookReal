@@ -10,7 +10,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "alperenersoy/filament-export": "^3.0",
         "althinect/filament-spatie-roles-permissions": "^2.3",
+        "barryvdh/laravel-dompdf": "^3.1",
         "filament/filament": "^3.2",
         "filament/forms": "^3.2",
         "filament/notifications": "^3.3",

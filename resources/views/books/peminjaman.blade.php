@@ -23,24 +23,25 @@
     <!-- Konten -->
     <main class="flex flex-col md:flex-row items-center justify-center px-8 gap-8 w-full max-w-5xl mt-24">
         <!-- Kartu Buku -->
-        <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96">
+        <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96 transform transition-transform hover:scale-105">
             <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}"
                 class="rounded-lg mb-4 w-full h-64 object-cover shadow-md">
             <h2 class="text-2xl font-bold text-center text-gray-800">{{ $book->judul }}</h2>
+            <p class="text-gray-600 text-center mt-2">Penulis: {{ $book->penulis }}</p>
+            <p class="text-gray-600 text-center ">Penerbit: {{ $book->penerbit }}</p>
+            <p class="text-gray-600 text-center">Tahun Terbit: {{ $book->diterbitkan }}</p>
         </div>
 
         <!-- Konfirmasi Peminjaman -->
-        <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96">
-            <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->judul }}"
-                class="rounded-lg mb-4 w-full h-64 object-cover shadow-md">
-            <h2 class="text-2xl font-bold text-center text-gray-800">{{ $book->judul }}</h2>
+        <div class="bg-white shadow-lg rounded-2xl p-6 w-80 md:w-96 transform transition-transform hover:scale-105">
+            <h2 class="text-2xl font-bold text-center text-gray-800">Konfirmasi Peminjaman</h2>
 
             <!-- Button Tambahkan ke Favorit -->
             @if (Auth::check())
                 <form action="{{ route('favorite.store', $book->id) }}" method="POST" class="mt-4">
                     @csrf
                     <button type="submit"
-                        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md transform hover:scale-105">
                         <i data-lucide="heart" class="w-5 h-5"></i> Tambahkan ke Favorit
                     </button>
                 </form>
@@ -48,7 +49,7 @@
                 <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk menambahkan buku ke favorit!')"
                     class="block mt-4">
                     <button
-                        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md transform hover:scale-105">
                         <i data-lucide="heart" class="w-5 h-5"></i> Login untuk Menambahkan ke Favorit
                     </button>
                 </a>
@@ -70,7 +71,7 @@
                         required>
 
                     <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 mt-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 mt-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md transform hover:scale-105">
                         <i data-lucide="book-open" class="w-5 h-5"></i> Pinjam
                     </button>
                 </form>
@@ -78,7 +79,7 @@
                 <a href="{{ route('login') }}" onclick="alert('Anda harus login untuk meminjam buku!')"
                     class="block mt-6">
                     <button
-                        class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md">
+                        class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md transform hover:scale-105">
                         <i data-lucide="key" class="w-5 h-5"></i> Login untuk Meminjam
                     </button>
                 </a>
@@ -87,7 +88,27 @@
     </main>
 
     <script>
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function() {
+            const tanggalKembaliInput = document.getElementById('tanggal_kembali');
+
+            // Ambil tanggal hari ini
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+
+            // Hitung batas maksimal (5 hari ke depan)
+            const maxDate = new Date();
+            maxDate.setDate(today.getDate() + 5);
+            const maxDateStr = maxDate.toISOString().split('T')[0];
+
+            // Atur batas minimal dan maksimal pada input tanggal
+            tanggalKembaliInput.setAttribute('min', todayStr);
+            tanggalKembaliInput.setAttribute('max', maxDateStr);
+        });
+    </script>
+
+
+    <script>
+        lucide.createIcons(); // Inisialisasi ikon Lucide
     </script>
 </body>
 

@@ -27,7 +27,6 @@ class ProfileController extends Controller
             'no_telepon' => 'nullable|string|max:15',
         ]);
 
-        // Update data users
         $users->update([
             'name' => $request->name,
             'username' => $request->username,

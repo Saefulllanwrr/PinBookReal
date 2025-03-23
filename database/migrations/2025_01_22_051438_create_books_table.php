@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('penulis');
             $table->date('diterbitkan');
             $table->text('deskripsi')->nullable();
-            $table->string('cover');
+            $table->string('cover')->nullable(false);
             $table->string('status')->default('available');
             $table->timestamps();
         });

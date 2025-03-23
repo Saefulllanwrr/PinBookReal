@@ -20,9 +20,7 @@
                         class="{{ request()->routeIs('riwayat.index') ? 'text-orange-500' : 'hover:text-orange-500' }}">Riwayat</a>
                 </li>
             @endauth
-            <li>
-                <a href="#kontak" onclick="handleContactClick(event)" class="hover:text-orange-500">Kontak</a>
-            </li>
+
         </ul>
 
         @guest

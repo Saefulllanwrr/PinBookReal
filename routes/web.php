@@ -4,13 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PinjamBukuController;
+use App\Models\Peminjaman;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 // Halaman Home (hanya bisa diakses oleh user dengan role 'user')
 
@@ -19,8 +20,10 @@ Route::get('/', [BookController::class, 'showHome'])->middleware('web')->name('h
 // Pencarian Buku
 Route::get('/search', [BookController::class, 'index'])->name('search');
 
-// Login
+// Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login/submit', [AuthController::class, 'submitLogin'])->name('login.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // Resource Routes for Books
@@ -63,12 +66,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
 });
 
-
-Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.show');
-Route::post('/contact', [ContactController::class, 'submitContactForm'])->name('contact.submit');
-
 // Route untuk menampilkan halaman profil
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 
 // Route untuk mengupdate profil
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+Route::get('/struk-peminjaman/{id}', function ($id) {
+    $peminjaman = Peminjaman::findOrFail($id);
+    $pdf = Pdf::loadView('struk_peminjaman', ['peminjaman' => $peminjaman]);
+    return $pdf->stream('struk_peminjaman.pdf');
+});

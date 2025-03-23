@@ -54,7 +54,7 @@ class AuthController extends Controller
             flash()->success('Login Berhasil!');
             return redirect()->route('home');
         }
-        flash()->success('Username atau Password salah!');
+        flash()->error('Username atau Password salah!');
         return back();
     }
 

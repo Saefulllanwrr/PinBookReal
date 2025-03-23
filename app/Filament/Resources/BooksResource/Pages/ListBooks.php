@@ -19,21 +19,6 @@ class ListBooks extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
-            ExportAction::make()
-                ->modalHeading('Konfirmasi Ekspor Data')
-                ->modalDescription('Apakah Anda yakin ingin mengekspor data ini?')
-                ->requiresConfirmation()
-                ->exports([
-                    ExcelExport::make()->withColumns([
-                        Column::make('isbn')->heading('ISBN')->format(NumberFormat::FORMAT_NUMBER),
-                        Column::make('judul')->heading('Judul Buku'),
-                        Column::make('penulis')->heading('Penulis'),
-                        Column::make('penerbit')->heading('Penerbit'),
-                        Column::make('diterbitkan')->heading('Tanggal Terbit'),
-                        Column::make('kategori.nama_kategori')->heading('Kategori'),
-                        Column::make('stok')->heading('Stok'),
-                    ]),
-                ]),
         ];
     }
 }

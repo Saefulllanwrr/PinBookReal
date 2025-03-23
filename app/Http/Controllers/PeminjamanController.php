@@ -51,38 +51,4 @@ class PeminjamanController extends Controller
         flash()->success('Peminjaman berhasil dibatalkan');
         return redirect()->route('peminjaman.index');
     }
-
-    // Mengembalikan buku & menghitung denda
-    public function returnBook($id)
-    {
-        $peminjaman = Peminjaman::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->where('status', 'dipinjam')
-            ->firstOrFail();
-
-        $tanggalKembali = Carbon::parse($peminjaman->tanggal_kembali);
-        $tanggalSekarang = now();
-
-        $denda = 0;
-        $status = 'dikembalikan';
-
-        if ($tanggalSekarang->greaterThan($tanggalKembali)) {
-            $hariTerlambat = $tanggalSekarang->diffInDays($tanggalKembali);
-            $denda = $hariTerlambat * 1000; // Denda Rp 1000 per hari
-            $status = 'terlambat';
-        }
-
-        $peminjaman->update([
-            'status' => $status,
-            'denda' => $denda,
-            'tanggal_kembali' => $tanggalSekarang,
-        ]);
-
-        // Kembalikan stok buku jika ada
-        if ($peminjaman->book) {
-            $peminjaman->book->increment('stok');
-        }
-
-        return redirect()->route('peminjaman.index');
-    }
 }
