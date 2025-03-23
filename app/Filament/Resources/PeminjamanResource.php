@@ -146,12 +146,12 @@ class PeminjamanResource extends Resource
                     $record->book->decrement('stok');
                 });
 
-                // Generate PDF menggunakan template struk/index.blade.php
+                // Generate PDF
                 $pdf = Pdf::loadView('struk.index', ['peminjaman' => $record]);
 
-                // Simpan PDF ke storage (opsional)
-                $filename = 'struk_peminjaman_' . $record->id . '.pdf';
-                Storage::put('public/struk/' . $filename, $pdf->output());
+                // Simpan PDF ke storage sementara
+                $pdfPath = 'struk/struk_peminjaman_' . $record->id . '.pdf';
+                Storage::put($pdfPath, $pdf->output());
 
                 // Kirim notifikasi
                 Notification::make()
@@ -159,11 +159,8 @@ class PeminjamanResource extends Resource
                     ->success()
                     ->send();
 
-                // Tampilkan PDF di tab baru menggunakan JavaScript
-                return response()->streamDownload(
-                    fn() => print($pdf->output()),
-                    $filename
-                );
+                // Redirect ke route untuk membuka PDF di tab baru
+                return redirect()->route('struk.peminjaman', ['id' => $record->id]);
             });
     }
 

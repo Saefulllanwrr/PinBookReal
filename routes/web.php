@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\StrukController;
+use App\Models\Peminjaman;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
@@ -10,8 +14,6 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PinjamBukuController;
-use App\Models\Peminjaman;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 // Halaman Home (hanya bisa diakses oleh user dengan role 'user')
 
@@ -72,8 +74,8 @@ Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')
 // Route untuk mengupdate profil
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
-Route::get('/struk-peminjaman/{id}', function ($id) {
-    $peminjaman = Peminjaman::findOrFail($id);
-    $pdf = Pdf::loadView('struk_peminjaman', ['peminjaman' => $peminjaman]);
-    return $pdf->stream('struk_peminjaman.pdf');
-});
+
+Route::get('/struk-peminjaman/{id}', [StrukController::class, 'strukPeminjaman'])->name('struk.peminjaman');
+
+Route::get('pdf/{book}', PdfController::class)->name('pdf')->where('book', '[0-9]+');
+Route::get('pdf/all', [PdfController::class, 'allBooks'])->name('pdf.all');

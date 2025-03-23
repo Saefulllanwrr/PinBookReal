@@ -2,18 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use BcMath\Number;
-use Filament\Forms;
+
 use App\Models\Book;
 use Filament\Tables;
-use App\Models\Kategori;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use pxlrbt\FilamentExcel\Columns\Column;
@@ -23,7 +24,6 @@ use Filament\Tables\Filters\SelectFilter;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\BooksResource\Pages;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class BooksResource extends Resource
@@ -128,6 +128,11 @@ class BooksResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\Action::make('pdf')
+                //     ->label('PDF')
+                //     ->color('success')
+                //     ->url(fn(Book $record) => route('pdf', $record))
+                //     ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 ExportBulkAction::make()

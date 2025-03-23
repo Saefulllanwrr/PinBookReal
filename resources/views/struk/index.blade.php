@@ -122,10 +122,14 @@
             <h2>PINBOOK KUPON</h2>
         </div>
         <div class="content">
-            <p><strong>Nama Peminjam:</strong> {{ $peminjaman->user->name }}</p>
-            <p><strong>Judul Buku:</strong> {{ $peminjaman->book->judul }}</p>
-            <p><strong>Tanggal Pinjam:</strong> {{ $peminjaman->tanggal_pinjam }}</p>
-            <p><strong>Tanggal Kembali:</strong> {{ $peminjaman->tanggal_kembali }}</p>
+            @if ($peminjaman->user && $peminjaman->book)
+                <p><strong>Nama Peminjam:</strong> {{ $peminjaman->user->name }}</p>
+                <p><strong>Judul Buku:</strong> {{ $peminjaman->book->judul }}</p>
+                <p><strong>Tanggal Pinjam:</strong> {{ $peminjaman->tanggal_pinjam }}</p>
+                <p><strong>Tanggal Kembali:</strong> {{ $peminjaman->tanggal_kembali }}</p>
+            @else
+                <p>Data peminjaman tidak lengkap.</p>
+            @endif
         </div>
         <div class="footer">
             <p>Peminjaman disetujui!</p>
