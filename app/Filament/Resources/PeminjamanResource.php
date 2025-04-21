@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Models\Peminjaman;
+use DateTime;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -65,6 +66,11 @@ class PeminjamanResource extends Resource
             DatePicker::make('tanggal_kembali')
                 ->label('Tanggal Kembali')
                 ->disabled(), // Field ini tidak bisa diubah
+
+            DatePicker::make('tanggal_dikembalikan')
+                ->label('Tanggal Dikembalikan')
+                ->disabled(),
+
 
             // Dropdown untuk status peminjaman
             Select::make('status')
@@ -201,9 +207,8 @@ class PeminjamanResource extends Resource
         return Action::make('kembalikan')
             ->label('Kembalikan')
             ->color('success')
-            ->requiresConfirmation() // Memerlukan konfirmasi sebelum dijalankan
+            ->requiresConfirmation()
             ->action(function (Peminjaman $record) {
-                // Cek apakah status peminjaman adalah 'dipinjam'
                 if ($record->status !== 'dipinjam') {
                     return Notification::make()
                         ->title('Peminjaman tidak dapat dikembalikan!')
@@ -212,46 +217,47 @@ class PeminjamanResource extends Resource
                         ->send();
                 }
 
-                // Deklarasi variabel denda
-                $denda = 0;
+                DB::transaction(function () use ($record) {
+                    $tanggalDikembalikan = Carbon::now();
+                    $jatuhTempo = new DateTime($record->tanggal_kembali);
+                    $pengembalian = new DateTime($tanggalDikembalikan);
 
-                // Mulai transaksi database
-                DB::transaction(function () use ($record, &$denda) {
-                    // Parse tanggal kembali dan tanggal sekarang
-                    $tanggalKembali = Carbon::parse($record->tanggal_kembali);
-                    $tanggalSekarang = Carbon::now();
 
-                    // Cek apakah pengembalian terlambat
-                    if ($tanggalSekarang->gt($tanggalKembali)) {
-                        // Hitung jumlah hari terlambat
-                        $hariTerlambat = $tanggalSekarang->diffInDays($tanggalKembali);
-                        $denda = $hariTerlambat * -1000; // Denda Rp 1000 per hari
+                    $denda = 0;
+                    $status = 'dikembalikan';
+
+                    if ($pengembalian > $jatuhTempo) {
+                        $interval = $jatuhTempo->diff($pengembalian);
+                        $selisihHari = $interval->days;
+                        $denda = $selisihHari * 1000;
                         $status = 'terlambat';
-                    } else {
-                        $status = 'dikembalikan';
                     }
 
-                    // Update record peminjaman
+                    // Pastikan denda tidak negatif
+                    $denda = max(0, $denda);
+
                     $record->update([
                         'status' => $status,
                         'denda' => $denda,
-                        'tanggal_kembali' => $tanggalSekarang, // Gunakan tanggal sekarang sebagai tanggal kembali
+                        'tanggal_dikembalikan' => $tanggalDikembalikan,
                     ]);
 
-                    // Tambah stok buku jika buku tersebut ada
                     if ($record->book) {
                         $record->book->increment('stok');
                     }
-                });
 
-                // Kirim notifikasi bahwa buku berhasil dikembalikan
-                return Notification::make()
-                    ->title('Buku berhasil dikembalikan!')
-                    ->body('Denda: Rp ' . number_format($denda, 0, ',', '.'))
-                    ->success()
-                    ->send();
+                    Notification::make()
+                        ->title('Buku berhasil dikembalikan!')
+                        ->body('Dengan denda denda: Rp ' . number_format($denda, 0, ',', '.'))
+                        ->success()
+                        ->send();
+                });
             });
     }
+
+
+
+
 
     // Method untuk mendefinisikan halaman yang terkait dengan resource ini
     public static function getPages(): array

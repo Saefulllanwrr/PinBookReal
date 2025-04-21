@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\StrukController;
-use App\Models\Peminjaman;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\AkunController;
@@ -59,7 +57,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
     Route::delete('/peminjaman/{id}/cancel', [PeminjamanController::class, 'cancel'])->name('peminjaman.cancel');
-    Route::post('/peminjaman/return/{id}', [PeminjamanController::class, 'returnBook'])->name('peminjaman.return');
 
     Route::post('/peminjaman', [PinjamBukuController::class, 'store'])->name('peminjaman.store');
     Route::get('/buku-favorit', [PinjamBukuController::class, 'bukuFavorit'])->name('bukuFavorit');
@@ -68,11 +65,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
 });
 
-// Route untuk menampilkan halaman profil
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+// Profile routes
+Route::middleware(['auth'])->group(function () {
+    // Profile page
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
-// Route untuk mengupdate profil
-Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    // Update profile
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Update password
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+});
 
 
 Route::get('/struk-peminjaman/{id}', [StrukController::class, 'strukPeminjaman'])->name('struk.peminjaman');

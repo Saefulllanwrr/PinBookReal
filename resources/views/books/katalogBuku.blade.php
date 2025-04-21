@@ -33,7 +33,7 @@
             <select
                 class="h-14 px-4 rounded-2xl border border-slate-300 dark:border-slate-600 shadow-lg text-slate-700 dark:text-white dark:bg-slate-700"
                 onchange="this.form.submit()" name="kategori">
-                <option value="">Semua Kategori</option>
+                <option value="">Kategori</option>
                 @foreach ($kategori as $kategoris)
                     <option value="{{ $kategoris->id }}" {{ request('kategori') == $kategoris->id ? 'selected' : '' }}>
                         {{ $kategoris->nama_kategori }}

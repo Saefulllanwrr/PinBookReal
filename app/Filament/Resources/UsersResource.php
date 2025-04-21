@@ -2,16 +2,15 @@
 
 namespace App\Filament\Resources;
 
-
 use App\Models\User;
+use App\Mail\PasswordResetMail;
 use Filament\Tables;
-use App\Models\Admin;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
-
+use Illuminate\Support\Facades\Mail;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -19,11 +18,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\UsersResource\Pages;
 
-
 class UsersResource extends Resource
-
 {
-
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -42,40 +38,44 @@ class UsersResource extends Resource
                 TextInput::make('username')
                     ->label('Username')
                     ->required()
-                    ->unique(User::class, 'username', ignoreRecord: true) // Tambahkan ignoreRecord untuk mengabaikan record saat edit
+                    ->unique(User::class, 'username', ignoreRecord: true)
                     ->maxLength(255),
 
                 TextInput::make('email')
                     ->label('Email')
                     ->email()
                     ->required()
-                    ->unique(User::class, 'email', ignoreRecord: true) // Tambahkan ignoreRecord untuk mengabaikan record saat edit
+                    ->unique(User::class, 'email', ignoreRecord: true)
                     ->maxLength(255),
 
                 TextInput::make('no_telepon')
                     ->numeric()
-                    ->label('No Telepon'),
+                    ->label('No Telepon')
+                    ->tel(), // Tambahkan validasi nomor telepon
 
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
                     ->required()
-                    ->hiddenOn('edit') // Sembunyikan field password saat mode edit
+                    ->hiddenOn('edit')
                     ->suffixActions([
                         Action::make('generatePassword')
-                            ->icon('heroicon-o-arrow-path') // Ikon refresh
+                            ->icon('heroicon-o-arrow-path')
                             ->action(function (Set $set) {
-                                $password = Str::random(8); // Generate password random
+                                $password = Str::random(8);
                                 $set('password', $password);
 
-                                // Menampilkan password dalam notifikasi
+                                // Notifikasi password generated
                                 Notification::make()
                                     ->title('Password Generated')
                                     ->body("Password: $password")
                                     ->success()
                                     ->send();
-                            }),
-                    ]),
+                            })
+                            ->tooltip('Generate random password'),
+                    ])
+                    ->confirmed() // Jika ada confirm password field
+                    ->dehydrated(fn($state) => filled($state)), // Hanya update jika diisi
             ]);
     }
 
@@ -85,44 +85,49 @@ class UsersResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->label('Nama')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('username')
+                    ->label('Username')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('no_telepon')
+                    ->label('No Telepon')
                     ->searchable(),
-                TextColumn::make('username')->label('Username')
-                    ->searchable(),
-                TextColumn::make('email')->label('Email')
-                    ->searchable(),
-                TextColumn::make('no_telepon')->label('No Telepon')
-                    ->searchable(),
+
                 TextColumn::make('is_blocked')
                     ->label('Status')
                     ->formatStateUsing(fn($state) => $state ? 'Diblokir' : 'Aktif')
                     ->badge()
-                    ->colors([
-                        'danger' => fn($state) => $state,
-                        'success' => fn($state) => !$state,
-                    ]),
+                    ->color(fn($state) => $state ? 'danger' : 'success')
+                    ->sortable(),
             ])
             ->filters([
-                // Filter berdasarkan status (Aktif atau Diblokir)
                 SelectFilter::make('is_blocked')
                     ->label('Status')
                     ->options([
-                        '0' => 'Aktif', // Nilai 0 untuk pengguna aktif
-                        '1' => 'Diblokir', // Nilai 1 untuk pengguna diblokir
+                        '0' => 'Aktif',
+                        '1' => 'Diblokir',
                     ])
-                // Secara default, tampilkan pengguna aktif
-
+                    ->default('0'), // Default filter aktif
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
 
-                // Aksi Blokir
                 Tables\Actions\Action::make('block')
                     ->label('Blokir')
                     ->icon('heroicon-o-lock-closed')
+                    ->color('danger')
                     ->action(function (User $record) {
                         $record->update(['is_blocked' => true]);
 
-                        // Kirim notifikasi ke semua admin
                         Notification::make()
                             ->title('Akun Diblokir')
                             ->body("Akun {$record->name} telah diblokir.")
@@ -130,12 +135,15 @@ class UsersResource extends Resource
                             ->send();
                     })
                     ->hidden(fn(User $record) => $record->is_blocked)
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->modalHeading('Blokir Pengguna')
+                    ->modalDescription('Apakah Anda yakin ingin memblokir pengguna ini?')
+                    ->modalSubmitActionLabel('Ya, Blokir'),
 
-                // Aksi Unblokir
                 Tables\Actions\Action::make('unblock')
                     ->label('Buka Blokir')
                     ->icon('heroicon-o-lock-open')
+                    ->color('success')
                     ->action(function (User $record) {
                         $record->update(['is_blocked' => false]);
 
@@ -146,28 +154,63 @@ class UsersResource extends Resource
                             ->send();
                     })
                     ->hidden(fn(User $record) => !$record->is_blocked)
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->modalHeading('Buka Blokir Pengguna')
+                    ->modalDescription('Apakah Anda yakin ingin membuka blokir pengguna ini?')
+                    ->modalSubmitActionLabel('Ya, Buka Blokir'),
 
-                // Aksi Reset Password
                 Tables\Actions\Action::make('resetPassword')
                     ->label('Reset Password')
                     ->icon('heroicon-o-key')
+                    ->color('warning')
                     ->action(function (User $record) {
-                        $password = Str::random(8); // Generate password random
-                        $record->update(['password' => bcrypt($password)]);
+                        $newPassword = Str::random(8);
+                        $record->update(['password' => bcrypt($newPassword)]);
 
-                        Notification::make()
-                            ->title('Password Reset')
-                            ->body("Password baru untuk {$record->name} adalah: $password")
-                            ->success()
-                            ->send();
+                        try {
+                            Mail::to($record->email)
+                                ->send(new PasswordResetMail($record, $newPassword));
+
+                            Notification::make()
+                                ->title('Password Reset Berhasil')
+                                ->body("Password untuk {$record->name} telah direset. Email notifikasi terkirim.")
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Gagal Mengirim Email Reset')
+                                ->body("Password direset tapi email tidak terkirim: " . $e->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
                     })
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->modalHeading('Reset Password')
+                    ->modalDescription('Apakah Anda yakin ingin reset password user ini? Password baru akan dikirim via email.')
+                    ->modalSubmitActionLabel('Ya, Reset Password'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+
+                    // Tambahkan bulk action untuk blokir banyak user
+                    Tables\Actions\BulkAction::make('block')
+                        ->label('Blokir Selected')
+                        ->icon('heroicon-o-lock-closed')
+                        ->action(function ($records) {
+                            $records->each->update(['is_blocked' => true]);
+                            Notification::make()
+                                ->title('Users Blocked')
+                                ->body("Selected users have been blocked.")
+                                ->success()
+                                ->send();
+                        })
+                        ->requiresConfirmation(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 

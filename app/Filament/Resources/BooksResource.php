@@ -7,14 +7,10 @@ use App\Models\Book;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
-use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use pxlrbt\FilamentExcel\Columns\Column;
@@ -67,8 +63,8 @@ class BooksResource extends Resource
                     ->disk('public')
                     ->directory('covers')
                     ->visibility('public')
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'])
-                    ->required(),
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp']),
+                
 
                 Select::make('kategori_id')
                     ->label('Kategori')
@@ -114,7 +110,8 @@ class BooksResource extends Resource
                 ImageColumn::make('cover')
                     ->disk('public')
                     ->width(100)
-                    ->height(100),
+                    ->height(100)
+                    
             ])
             ->emptyStateHeading('Tidak ada data buku')
             ->emptyStateDescription('Mulai dengan menambahkan data buku baru')
@@ -135,20 +132,12 @@ class BooksResource extends Resource
                 //     ->openUrlInNewTab(),
             ])
             ->bulkActions([
-                ExportBulkAction::make()
-                    ->exports([
-                        ExcelExport::make()->withColumns([
-                            Column::make('isbn')->heading('ISBN')->format(NumberFormat::FORMAT_NUMBER),
-                            Column::make('judul')->heading('Judul Buku'),
-                            Column::make('penulis')->heading('Penulis'),
-                            Column::make('penerbit')->heading('Penerbit'),
-                            Column::make('diterbitkan')->heading('Tanggal Terbit'),
-                            Column::make('kategori.nama_kategori')->heading('Kategori'),
-                            Column::make('stok')->heading('Stok'),
-                        ]),
-                    ]),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()->exports([
+                        ExcelExport::make('table')->fromTable(),
+                        ExcelExport::make('form')->fromForm(),
+                    ])
                 ]),
             ]);
     }
@@ -170,5 +159,12 @@ class BooksResource extends Resource
     public static function getPluralLabel(): ?string
     {
         return 'Manajemen Buku';
+    }
+
+    public function getTableBulkActions()
+    {
+        return  [
+            ExportBulkAction::make()
+        ];
     }
 }

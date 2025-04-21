@@ -17,6 +17,7 @@ class Peminjaman extends Model
         'buku_id', // Gunakan book_id agar lebih konsisten
         'tanggal_pinjam',
         'tanggal_kembali',
+        'tanggal_dikembalikan',
         'status',
         'denda',
     ];

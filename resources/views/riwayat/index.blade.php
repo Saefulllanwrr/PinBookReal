@@ -63,11 +63,13 @@
                                     </td>
                                     <td class="py-4 px-6 text-center">
                                         @if ($item->status === 'dipinjam')
-                                            <span class="text-yellow-500 font-semibold">{{ ucfirst($item->status) }}</span>
+                                            <span class="text-blue-500 font-semibold">{{ ucfirst($item->status) }}</span>
                                         @elseif($item->status === 'dikembalikan')
                                             <span class="text-green-500 font-semibold">{{ ucfirst($item->status) }}</span>
                                         @elseif($item->status === 'terlambat')
                                             <span class="text-red-500 font-semibold">{{ ucfirst($item->status) }}</span>
+                                        @elseif($item->status === 'menunggu')
+                                            <span class="text-yellow-500 font-semibold">{{ ucfirst($item->status) }}</span>
                                         @endif
                                     </td>
                                     <td class="py-4 px-6 text-center">

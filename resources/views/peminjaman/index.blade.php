@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PinBook Peminjaman</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -55,7 +56,7 @@
                                 <td class="py-5 px-6 text-center space-x-4">
                                     @if ($pinjam->status == 'menunggu')
                                         <form action="{{ route('peminjaman.cancel', $pinjam->id) }}" method="POST"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin membatalkan peminjaman ini?')">
+                                            class="cancel-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -82,6 +83,31 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('.cancel-form').on('submit', function(e) {
+                e.preventDefault(); // Mencegah submit langsung
+                const form = this;
+
+                Swal.fire({
+                    title: 'Yakin ingin membatalkan?',
+                    text: "Tindakan ini tidak bisa dibatalkan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e3342f',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, batalkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Submit form jika dikonfirmasi
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
+
 
 </html>

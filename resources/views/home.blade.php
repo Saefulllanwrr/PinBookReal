@@ -144,8 +144,7 @@
                 </div>
                 <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 hover:shadow-sm duration-300">
                     <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Berapa lama waktu peminjaman?</h3>
-                    <p class="text-slate-600 dark:text-gray-300">Waktu peminjaman biasanya 14 hari, namun dapat
-                        diperpanjang jika diperlukan.</p>
+                    <p class="text-slate-600 dark:text-gray-300">Waktu peminjaman tidak bisa lebih dari 5 hari</p>
                 </div>
                 <div class="bg-white dark:bg-gray-700 rounded-3xl p-6 hover:shadow-sm duration-300">
                     <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Apakah ada biaya peminjaman?</h3>
